@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<!-- Ski Turn Curve Generator  (c)2023 Jonathan Miner -->
+<html>
+	<head>
+	</head>
+	<body>
+		<h1>Ski Turn Curve Generator</h1>
+		<input type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
+		<label for="margin">Margin (px)</label><br>
+		<input type="number" id="radius"  min="0" max="200" value="100" title="Turn Radius in Pixels">
+		<label for="radius">Radius (px)</label><br>
+		<input type="number" id="angle"  min="0" max="180" value="85" title="Degree of the Turn">
+		<label for="angle">Angle (degrees)</label><br>
+		<input type="number" id="fallline"  min="0" max="100" value="0" title="Length of straightline down the fall-line in Pixels">
+		<label for="fallline">Fallline (px)</label><br>
+		<input type="number" id="traverse"  min="0" max="100" value="10" title="Length of straighline traverse bewteen turns in Pixels">
+		<label for="traverse">Traverse (px)</label><br>
+		<input type="number" id="stance"  min="0" max="20" value="10" title="Stance width in Pixels">
+		<label for="stance">Stance (px)</label><br>
+		<input type="number" id="pressure"  min="0" max="10" value="8" title="Maximum line width in Pixels">
+		<label for="pressure">Pressure (px)</label><br>
+		<table>
+			<tr>
+				<th>% of Path</th>
+				<th>% of Right Foot</th>
+				<th>% of Left Foot</th>
+			</tr>
+			<tr>
+				<td>
+					<input readonly type="number" id="tp0"  min="0" max="100" value="0">
+				</td>
+				<td>
+					<input type="number" id="rp0"  min="0" max="100" value="90">
+				</td>
+				<td>
+					<input type="number" id="lp0"  min="0" max="100" value="10">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="number" id="tp1"  min="0" max="100" value="40">
+				</td>
+				<td>
+					<input type="number" id="rp1"  min="0" max="100" value="50">
+				</td>
+				<td>
+					<input type="number" id="lp1"  min="0" max="100" value="50">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="number" id="tp2"  min="0" max="100" value="50">
+				</td>
+				<td>
+					<input type="number" id="rp2"  min="0" max="100" value="50">
+				</td>
+				<td>
+					<input type="number" id="lp2"  min="0" max="100" value="50">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="number" id="tp3"  min="0" max="100" value="60">
+				</td>
+				<td>
+					<input type="number" id="rp3"  min="0" max="100" value="50">
+				</td>
+				<td>
+					<input type="number" id="lp3"  min="0" max="100" value="50">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input readonly type="number" id="tp4"  min="0" max="100" value="100">
+				</td>
+				<td>
+					<input type="number" id="rp4"  min="0" max="100" value="10">
+				</td>
+				<td>
+					<input type="number" id="lp4"  min="0" max="100" value="90">
+				</td>
+			</tr>
+		</table>
+		<button onclick="draw_turn()" id="submit">Plot Turn</button>
+		<br>
+		<canvas id="canvas" width="400" height="400"></canvas>
+		<script>
+// https://www.javascripttutorial.net/web-apis/javascript-draw-line/
+function draw_line(coords, length, bearing, color, width)
+{
+	bearing *= Math.PI / 180.0;
+	dy = length * Math.cos(bearing);
+	dx = length * Math.sin(bearing);
+	end = [coords[0] + dx, coords[1] + dy];
+	if (width > 0)
+	{
+		const canvas = document.querySelector('#canvas');
+		const ctx = canvas.getContext('2d');
+		ctx.strokeStyle = color;
+		ctx.lineWidth = width;
+		ctx.beginPath();
+		ctx.moveTo(coords[0], coords[1]);
+		ctx.lineTo(end[0], end[1]);
+		ctx.stroke();
+	}
+	return end;
+}
+
+function create_gradient(fixed_points, width)
+{
+	new_gradient = [];
+	for (const point of fixed_points)
+	{
+		if (new_gradient.length == 0)
+		{
+			new_gradient.push([point[1], point[2]]);
+			i = 0;
+		}
+		else
+		{
+			dr = (point[1] - new_gradient[i][0]) / (point[0] - i);
+			dl = (point[2] - new_gradient[i][1]) / (point[0] - i);
+			while ( i < point[0])
+			{
+				new_gradient.push([new_gradient[i][0]+dr,new_gradient[i][1]+dl]);
+				i++;
+			}
+		}
+	}
+	while (i <= 100)
+	{
+		new_gradient.push([new_gradient[i][0], new_gradient[i][1]]);
+		i++;
+	}
+	for (i = 0; i < new_gradient.length; i++)
+	{
+		new_gradient[i] = [width * new_gradient[i][0] / 100.0,  width * new_gradient[i][1] / 100.0];
+	}
+	return new_gradient;
+}
+
+function draw_turn()
+{
+	margin = parseInt(document.getElementById('margin').value);
+	radius = parseInt(document.getElementById('radius').value);
+	angle = parseInt(document.getElementById('angle').value);
+	fallline = parseInt(document.getElementById('fallline').value);
+	traverse = parseInt(document.getElementById('traverse').value);
+	stance = parseInt(document.getElementById('stance').value);
+	pressure = parseInt(document.getElementById('pressure').value);
+	gradient = [
+		[parseInt(document.getElementById('tp0').value), parseInt(document.getElementById('rp0').value), parseInt(document.getElementById('lp0').value)],
+		[parseInt(document.getElementById('tp1').value), parseInt(document.getElementById('rp1').value), parseInt(document.getElementById('lp1').value)],
+		[parseInt(document.getElementById('tp2').value), parseInt(document.getElementById('rp2').value), parseInt(document.getElementById('lp2').value)],
+		[parseInt(document.getElementById('tp3').value), parseInt(document.getElementById('rp3').value), parseInt(document.getElementById('lp3').value)],
+		[parseInt(document.getElementById('tp4').value), parseInt(document.getElementById('rp4').value), parseInt(document.getElementById('lp4').value)],
+	];
+	gradient = create_gradient(gradient, pressure);
+
+	const canvas = document.querySelector('#canvas');
+	const ctx = canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	coord = [canvas.width/2 - radius - traverse/2, margin];
+	rcoord = [coord[0]-stance, coord[1]];
+	lcoord = [coord[0]+stance, coord[1]];
+	total_distance = fallline + traverse + 2*2*Math.PI*radius*angle/360.0;
+	right_distance = 0.0;
+	left_distance = 0.0;
+	// right-apex
+	distance = 1;
+	for (i = 0; i < fallline/2; i++)
+	{
+		rcoord = draw_line(rcoord, distance, 0, 'black', gradient[Math.floor(100*right_distance/total_distance)][0]);
+		lcoord = draw_line(lcoord, distance, 0, 'black', gradient[Math.floor(100*left_distance/total_distance)][1]);
+		right_distance += 1;
+		left_distance += 1;
+	}
+	// right footer
+	rdistance = (2*Math.PI*(radius+stance))/360.0;
+	ldistance = (2*Math.PI*(radius-stance))/360.0;
+	for (i = 0; i < angle; i++)
+	{
+		rcoord = draw_line(rcoord, rdistance, i, 'black', gradient[Math.floor(100*right_distance/total_distance)][0]);
+		lcoord = draw_line(lcoord, ldistance, i, 'black', gradient[Math.floor(100*left_distance/total_distance)][1]);
+		right_distance += rdistance;
+		left_distance += ldistance;
+	}
+	// traverse
+	distance = 1;
+	for (i = 0; i < traverse; i++)
+	{
+		rcoord = draw_line(rcoord, distance, angle, 'black', gradient[Math.floor(100*right_distance/total_distance)][0]);
+		lcoord = draw_line(lcoord, distance, angle, 'black', gradient[Math.floor(100*left_distance/total_distance)][1]);
+		right_distance += distance;
+		left_distance += distance;
+	}
+	// left footer
+	rdistance = (2*Math.PI*(radius-stance))/360.0;
+	ldistance = (2*Math.PI*(radius+stance))/360.0;
+	for (i = 0; i < angle; i++)
+	{
+		rcoord = draw_line(rcoord, rdistance, angle-i, 'black', gradient[Math.floor(100*right_distance/total_distance)][0]);
+		lcoord = draw_line(lcoord, ldistance, angle-i, 'black', gradient[Math.floor(100*left_distance/total_distance)][1]);
+		right_distance += rdistance;
+		left_distance += ldistance;
+	}
+	// left-apex
+	distance = 1;
+	for (i = 0; i < fallline/2; i++)
+	{
+		rcoord = draw_line(rcoord, distance, 0, 'black', gradient[Math.floor(100*right_distance/total_distance)][0]);
+		lcoord = draw_line(lcoord, distance, 0, 'black', gradient[Math.floor(100*left_distance/total_distance)][1]);
+		right_distance += 1;
+		left_distance += 1;
+	}
+}
+		</script>
+		<br>
+		<font size=-1>
+			<i>(c)2023 Jonathan Miner</i>
+		</font>
+	</body>
+</html>
