@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<h1>Ski Turn Curve Generator</h1>
+		<table><tr><td valign=top>
 		<input type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
 		<label for="margin">Margin (px)</label><br>
 		<input type="number" id="radius"  min="0" max="200" value="100" title="Turn Radius in Pixels">
@@ -104,8 +105,9 @@
 			</tr>
 		</table>
 		<button onclick="draw_turn()" id="submit">Plot Turn</button>
-		<br>
+		</td><td valign=top bgcolor="white">
 		<canvas id="canvas" width="400" height="800"></canvas>
+		</td></tr></table>
 		<script>
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
 function draw_line(coords, length, bearing, color, width)
