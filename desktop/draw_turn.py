@@ -3,7 +3,11 @@ import json
 import math
 from PIL import Image, ImageDraw, ImageOps
 
-SIZE=400
+WIDTH=400
+HEIGHT=400
+SKI_LENGTH=40.0/100.0
+STEPS=10
+SKI_COLOR='blue'
 
 def draw_line(coords, length, bearing, fill="black", width=1):
     angle = math.radians(bearing)
@@ -14,24 +18,7 @@ def draw_line(coords, length, bearing, fill="black", width=1):
         draw.line([coords, end], fill=fill, width=int(width))
     return end
 
-# Pixels
-CONFIG = {
-    "margin": 5,
-    "radius": 150,
-    "angle": 80,
-    "traverse": 10,
-    "fallline": 0,
-    "stance": 10,
-    "pressure": 8,
-    "gradient": [
-        (0, 90, 10),
-        (40, 50, 50),
-        (60, 50, 50),
-        (100, 10, 90),
-        ],
-}
-
-def create_gradient(fixed_points, width):
+def create_gradient(fixed_points, f0=1, f1=1):
     gradient = []
     for point in fixed_points:
         if len(gradient) == 0:
@@ -47,7 +34,7 @@ def create_gradient(fixed_points, width):
         gradient.append((gradient[i][0], gradient[i][1]))
         i += 1
     for i in range(len(gradient)):
-        gradient[i] = (width * gradient[i][0] / 100.0,  width * gradient[i][1] / 100.0)
+        gradient[i] = (f0 * gradient[i][0],  f1 * gradient[i][1])
     return gradient
 
 def draw_curves(coord):
@@ -55,46 +42,92 @@ def draw_curves(coord):
     lcoord = (coord[0]+CONFIG['stance'], coord[1])
 
     total_distance = CONFIG['fallline'] + CONFIG['traverse'] + 2*2*math.pi*CONFIG['radius']*(CONFIG['angle']/360.0)
-    right_distance = 0.0
-    left_distance = 0.0
+    center_distance = 0.0
+    step_distance = 0.0
 
     # Apex
     distance = 1
     for i in range(int(CONFIG['fallline']/2)):
-        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[int(100*right_distance/total_distance)][0])
-        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[int(100*left_distance/total_distance)][1])
-        right_distance += distance
-        left_distance += distance
-    # Right Footer
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Right Footer Bottom
     rdistance = (2*math.pi*(CONFIG['radius']+CONFIG['stance']))/360
     ldistance = (2*math.pi*(CONFIG['radius']-CONFIG['stance']))/360
+    distance = 2*math.pi*(CONFIG['radius'])/360
     for i in range(CONFIG['angle']):
-        rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[int(100*right_distance/total_distance)][0])
-        lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[int(100*left_distance/total_distance)][1])
-        right_distance += rdistance
-        left_distance += ldistance
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
     # Traverse
-    distance = 1 
+    distance = 1
     for i in range(CONFIG['traverse']):
-        rcoord = draw_line(rcoord, distance, CONFIG['angle'], width=GRADIENT[int(100*right_distance/total_distance)][0])
-        lcoord = draw_line(lcoord, distance, CONFIG['angle'], width=GRADIENT[int(100*left_distance/total_distance)][1])
-        right_distance += distance
-        left_distance += distance
-    # Left Footer
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], CONFIG['angle']+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], CONFIG['angle']+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], CONFIG['angle']+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], CONFIG['angle']+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, distance, CONFIG['angle'], width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, distance, CONFIG['angle'], width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Left Footer Top
     ldistance = (2*math.pi*(CONFIG['radius']+CONFIG['stance']))/360
     rdistance = (2*math.pi*(CONFIG['radius']-CONFIG['stance']))/360
-    for i in range(CONFIG['angle']):
-        rcoord = draw_line(rcoord, rdistance, CONFIG['angle']-i, width=GRADIENT[int(100*right_distance/total_distance)][0])
-        lcoord = draw_line(lcoord, ldistance, CONFIG['angle']-i, width=GRADIENT[int(100*left_distance/total_distance)][1])
-        right_distance += rdistance
-        left_distance += ldistance
+    distance = 2*math.pi*(CONFIG['radius'])/360
+    for i in range(CONFIG['angle'], 0, -1):
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
     # Apex
     distance = 1 
     for i in range(int(CONFIG['fallline']/2)):
-        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[int(100*right_distance/total_distance)][0])
-        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[int(100*left_distance/total_distance)][1])
-        right_distance += distance
-        left_distance += distance
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
 
 if __name__ == "__main__":
     name = sys.argv[1]
@@ -102,14 +135,18 @@ if __name__ == "__main__":
         CONFIG = json.loads(infile.read())
 
     # Calculate the Pressure Gradient map
-    GRADIENT = create_gradient(CONFIG['gradient'], CONFIG['pressure'])
+    GRADIENT = create_gradient(CONFIG['gradient'], CONFIG['pressure']/100.0, CONFIG['pressure']/100.0)
+
+    # Calculate the Skid Gradient map
+    RPIVOT = create_gradient(CONFIG['right_pivot'], SKI_LENGTH, 1)
+    LPIVOT = create_gradient(CONFIG['left_pivot'], SKI_LENGTH, 1)
 
     # Image
-    im = Image.new("RGB", (SIZE, SIZE), "white")
+    im = Image.new("RGB", (WIDTH, HEIGHT), "white")
     draw = ImageDraw.Draw(im)
 
     # Starting Point
-    coord = (SIZE/2 - CONFIG['radius'] - CONFIG['traverse']/2, CONFIG['margin'])
+    coord = (WIDTH/2 - CONFIG['radius'] - CONFIG['traverse']/2, CONFIG['margin'])
     draw_curves(coord)
 
     im.save(name+".png")
