@@ -4,7 +4,7 @@ import math
 from PIL import Image, ImageDraw, ImageOps
 
 WIDTH=400
-HEIGHT=400
+HEIGHT=800
 SKI_LENGTH=40.0/100.0
 STEPS=10
 SKI_COLOR='blue'
@@ -41,7 +41,7 @@ def draw_curves(coord):
     rcoord = (coord[0]-CONFIG['stance'], coord[1])
     lcoord = (coord[0]+CONFIG['stance'], coord[1])
 
-    total_distance = CONFIG['fallline'] + CONFIG['traverse'] + 2*2*math.pi*CONFIG['radius']*(CONFIG['angle']/360.0)
+    total_distance = 2*(CONFIG['fallline'] + CONFIG['traverse'] + 2*2*math.pi*CONFIG['radius']*(CONFIG['angle']/360.0))
     center_distance = 0.0
     step_distance = 0.0
 
@@ -111,6 +111,73 @@ def draw_curves(coord):
                 draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1]-180, fill=SKI_COLOR)
         rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Apex Left Footer
+    distance = 1 
+    for i in range(int(CONFIG['fallline'])):
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Left Footer Bottom
+    ldistance = (2*math.pi*(CONFIG['radius']+CONFIG['stance']))/360
+    rdistance = (2*math.pi*(CONFIG['radius']-CONFIG['stance']))/360
+    distance = 2*math.pi*(CONFIG['radius'])/360
+    for i in range(CONFIG['angle']):
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, rdistance, -i, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, ldistance, -i, width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Traverse
+    distance = 1
+    for i in range(CONFIG['traverse']):
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], -CONFIG['angle']+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], -CONFIG['angle']+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], -CONFIG['angle']+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], -CONFIG['angle']+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, distance, -CONFIG['angle'], width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, distance, -CONFIG['angle'], width=GRADIENT[index][1])
+        center_distance += distance
+        step_distance += distance
+    # Right Footer Top
+    rdistance = (2*math.pi*(CONFIG['radius']+CONFIG['stance']))/360
+    ldistance = (2*math.pi*(CONFIG['radius']-CONFIG['stance']))/360
+    distance = 2*math.pi*(CONFIG['radius'])/360
+    for i in range(CONFIG['angle'], 0, -1):
+        index = int(100*center_distance/total_distance)
+        if step_distance > STEPS:
+            step_distance = 0.0
+            if abs(RPIVOT[index][1]) > 1:
+                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1]-180, fill=SKI_COLOR)
+            if abs(LPIVOT[index][1]) > 1:
+                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1], fill=SKI_COLOR)
+                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+        rcoord = draw_line(rcoord, rdistance, -i, width=GRADIENT[index][0])
+        lcoord = draw_line(lcoord, ldistance, -i, width=GRADIENT[index][1])
         center_distance += distance
         step_distance += distance
     # Apex
