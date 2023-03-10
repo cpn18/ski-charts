@@ -34,7 +34,7 @@ def create_gradient(fixed_points, f0=1, f1=1):
         gradient.append((gradient[i][0], gradient[i][1]))
         i += 1
     for i in range(len(gradient)):
-        gradient[i] = (f0 * gradient[i][0],  f1 * gradient[i][1])
+        gradient[i] = (round(f0 * gradient[i][0]),  round(f1 * gradient[i][1]))
     return gradient
 
 def draw_curves(coord):
