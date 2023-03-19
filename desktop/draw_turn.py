@@ -37,6 +37,14 @@ def create_gradient(fixed_points, f0=1, f1=1):
         gradient[i] = (round(f0 * gradient[i][0]),  round(f1 * gradient[i][1]))
     return gradient
 
+def draw_skid(rcoord, lcoord, index, angle):
+    if abs(RPIVOT[index][1]) > 1:
+        draw_line(rcoord, RPIVOT[index][0], angle+RPIVOT[index][1], fill=SKI_COLOR)
+        draw_line(rcoord, RPIVOT[index][0], angle+RPIVOT[index][1]-180, fill=SKI_COLOR)
+    if abs(LPIVOT[index][1]) > 1:
+        draw_line(lcoord, LPIVOT[index][0], angle+LPIVOT[index][1], fill=SKI_COLOR)
+        draw_line(lcoord, LPIVOT[index][0], angle+LPIVOT[index][1]-180, fill=SKI_COLOR)
+
 def draw_curves(coord):
     rcoord = (coord[0]-CONFIG['stance'], coord[1])
     lcoord = (coord[0]+CONFIG['stance'], coord[1])
@@ -51,12 +59,7 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, 0)
         rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
         center_distance += distance
@@ -69,12 +72,7 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, i)
         rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[index][1])
         center_distance += distance
@@ -85,12 +83,7 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], CONFIG['angle']+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], CONFIG['angle']+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], CONFIG['angle']+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], CONFIG['angle']+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, CONFIG['angle'])
         rcoord = draw_line(rcoord, distance, CONFIG['angle'], width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, distance, CONFIG['angle'], width=GRADIENT[index][1])
         center_distance += distance
@@ -103,27 +96,17 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], i+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, i)
         rcoord = draw_line(rcoord, rdistance, i, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, ldistance, i, width=GRADIENT[index][1])
         center_distance += distance
         step_distance += distance
     # Apex Left Footer
-    distance = 1 
+    distance = 1
     for i in range(int(CONFIG['fallline'])):
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, 0)
         rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
         center_distance += distance
@@ -136,12 +119,7 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, -1)
         rcoord = draw_line(rcoord, rdistance, -i, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, ldistance, -i, width=GRADIENT[index][1])
         center_distance += distance
@@ -152,12 +130,7 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], -CONFIG['angle']+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], -CONFIG['angle']+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], -CONFIG['angle']+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], -CONFIG['angle']+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, -CONFIG['angle'])
         rcoord = draw_line(rcoord, distance, -CONFIG['angle'], width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, distance, -CONFIG['angle'], width=GRADIENT[index][1])
         center_distance += distance
@@ -170,27 +143,17 @@ def draw_curves(coord):
         index = int(100*center_distance/total_distance)
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], -i+RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], -i+LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, -i)
         rcoord = draw_line(rcoord, rdistance, -i, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, ldistance, -i, width=GRADIENT[index][1])
         center_distance += distance
         step_distance += distance
     # Apex
-    distance = 1 
+    distance = 1
     for i in range(int(CONFIG['fallline']/2)):
         if step_distance > STEPS:
             step_distance = 0.0
-            if abs(RPIVOT[index][1]) > 1:
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(rcoord, RPIVOT[index][0], RPIVOT[index][1]-180, fill=SKI_COLOR)
-            if abs(LPIVOT[index][1]) > 1:
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1], fill=SKI_COLOR)
-                draw_line(lcoord, LPIVOT[index][0], LPIVOT[index][1]-180, fill=SKI_COLOR)
+            draw_skid(rcoord, lcoord, index, 0)
         rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
         lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
         center_distance += distance
