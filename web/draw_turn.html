@@ -8,6 +8,8 @@
 		<table><tr><td valign=top>
 		<input type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
 		<label for="margin">Margin (px)</label><br>
+		<input type="number" id="skilength"  min="0" max="100" value="40" title="Ski Length in Pixels">
+		<label for="skilength">Ski Length (px)</label><br>
 		<input type="number" id="radius"  min="0" max="200" value="100" title="Turn Radius in Pixels">
 		<label for="radius">Radius (px)</label><br>
 		<input type="number" id="angle"  min="0" max="180" value="85" title="Degree of the Turn">
@@ -65,56 +67,56 @@
 		<table>
 			<tr>
 				<th>% of Path</th>
-				<th colspan=2>Right Pivot/Angle</th>
-				<th colspan=2>Left Pivot/Angle</th>
+				<th colspan=2>Right Pivot/Steering Angle</th>
+				<th colspan=2>Left Pivot/Steering Angle</th>
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="pp0" min=0 max=100 value=0></td>
-				<td><input readonly type="number" id="rpivot0" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot0" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle0" min=-180 max=180 value=30></td>
-				<td><input readonly type="number" id="lpivot0" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot0" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle0" min=-180 max=180 value=-30></td>
 			</tr>
 			<tr>
 				<td><input type="number" id="pp1" min=0 max=100 value=20></td>
-				<td><input readonly type="number" id="rpivot1" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot1" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle1" min=-180 max=180 value=0></td>
-				<td><input readonly type="number" id="lpivot1" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot1" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle1" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
 				<td><input type="number" id="pp2" min=0 max=100 value=30></td>
-				<td><input readonly type="number" id="rpivot2" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot2" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle2" min=-180 max=180 value=0></td>
-				<td><input readonly type="number" id="lpivot2" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot2" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle2" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
 				<td><input type="number" id="pp3" min=0 max=100 value=50></td>
-				<td><input readonly type="number" id="rpivot3" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot3" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle3" min=-180 max=180 value=30></td>
-				<td><input readonly type="number" id="lpivot3" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot3" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle3" min=-180 max=180 value=-30></td>
 			</tr>
 			<tr>
 				<td><input type="number" id="pp4" min=0 max=100 value=70></td>
-				<td><input readonly type="number" id="rpivot4" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot4" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle4" min=-180 max=180 value=0></td>
-				<td><input readonly type="number" id="lpivot4" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot4" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle4" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
 				<td><input type="number" id="pp5" min=0 max=100 value=80></td>
-				<td><input readonly type="number" id="rpivot5" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot5" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle5" min=-180 max=180 value=0></td>
-				<td><input readonly type="number" id="lpivot5" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot5" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle5" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="pp6" min=0 max=100 value=100></td>
-				<td><input readonly type="number" id="rpivot6" min=0 max=100 value=50></td>
+				<td><input type="number" id="rpivot6" min=0 max=100 value=50></td>
 				<td><input type="number" id="rangle6" min=-180 max=180 value=30></td>
-				<td><input readonly type="number" id="lpivot6" min=0 max=100 value=50></td>
+				<td><input type="number" id="lpivot6" min=0 max=100 value=50></td>
 				<td><input type="number" id="langle6" min=-180 max=180 value=-30></td>
 			</tr>
 		</table>
@@ -182,17 +184,17 @@ function draw_skid(angle)
 	if (Math.abs(right_pivot[index][1]) > 1)
 	{
 		draw_line(rcoord, right_pivot[index][0], angle+right_pivot[index][1], 'blue', 1);
-		draw_line(rcoord, right_pivot[index][0], angle+right_pivot[index][1]-180, 'blue', 1);
+		draw_line(rcoord, ski_length - right_pivot[index][0], angle+right_pivot[index][1]-180, 'blue', 1);
 	}
 	if (Math.abs(left_pivot[index][1]) > 1)
 	{
 		draw_line(lcoord, left_pivot[index][0], angle+left_pivot[index][1], 'blue', 1);
-		draw_line(lcoord, left_pivot[index][0], angle+left_pivot[index][1]-180, 'blue', 1);
+		draw_line(lcoord, ski_length - left_pivot[index][0], angle+left_pivot[index][1]-180, 'blue', 1);
 	}
 }
 function draw_turn()
 {
-	ski_length = 40.0/100.0;
+	ski_length = parseInt(document.getElementById('skilength').value);
 	margin = parseInt(document.getElementById('margin').value);
 	radius = parseInt(document.getElementById('radius').value);
 	angle = parseInt(document.getElementById('angle').value);
@@ -220,7 +222,7 @@ function draw_turn()
 		[parseInt(document.getElementById('pp5').value), parseInt(document.getElementById('rpivot5').value), parseInt(document.getElementById('rangle5').value)],
 		[parseInt(document.getElementById('pp6').value), parseInt(document.getElementById('rpivot6').value), parseInt(document.getElementById('rangle6').value)]
 	];
-	right_pivot = create_gradient(right_pivot, ski_length, 1);
+	right_pivot = create_gradient(right_pivot, ski_length/100.0, 1);
 
 	left_pivot = [
 		[parseInt(document.getElementById('pp0').value), parseInt(document.getElementById('lpivot0').value), parseInt(document.getElementById('langle0').value)],
@@ -231,7 +233,7 @@ function draw_turn()
 		[parseInt(document.getElementById('pp5').value), parseInt(document.getElementById('lpivot5').value), parseInt(document.getElementById('langle5').value)],
 		[parseInt(document.getElementById('pp6').value), parseInt(document.getElementById('lpivot6').value), parseInt(document.getElementById('langle6').value)]
 	];
-	left_pivot = create_gradient(left_pivot, ski_length, 1);
+	left_pivot = create_gradient(left_pivot, ski_length/100.0, 1);
 
 	const canvas = document.querySelector('#canvas');
 	const ctx = canvas.getContext('2d');
