@@ -60,8 +60,8 @@ def draw_curves(coord):
         if step_distance > STEPS:
             step_distance = 0.0
             draw_skid(rcoord, lcoord, index, 0)
-        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
-        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0], fill="blue")
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1], fill="blue")
         center_distance += distance
         step_distance += distance
     # Right Footer Bottom
@@ -84,8 +84,8 @@ def draw_curves(coord):
         if step_distance > STEPS:
             step_distance = 0.0
             draw_skid(rcoord, lcoord, index, CONFIG['angle'])
-        rcoord = draw_line(rcoord, distance, CONFIG['angle'], width=GRADIENT[index][0])
-        lcoord = draw_line(lcoord, distance, CONFIG['angle'], width=GRADIENT[index][1])
+        rcoord = draw_line(rcoord, distance, CONFIG['angle'], width=GRADIENT[index][0], fill="red")
+        lcoord = draw_line(lcoord, distance, CONFIG['angle'], width=GRADIENT[index][1], fill="red")
         center_distance += distance
         step_distance += distance
     # Left Footer Top
@@ -107,8 +107,8 @@ def draw_curves(coord):
         if step_distance > STEPS:
             step_distance = 0.0
             draw_skid(rcoord, lcoord, index, 0)
-        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
-        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0], fill="blue")
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1], fill="blue")
         center_distance += distance
         step_distance += distance
     # Left Footer Bottom
@@ -131,8 +131,8 @@ def draw_curves(coord):
         if step_distance > STEPS:
             step_distance = 0.0
             draw_skid(rcoord, lcoord, index, -CONFIG['angle'])
-        rcoord = draw_line(rcoord, distance, -CONFIG['angle'], width=GRADIENT[index][0])
-        lcoord = draw_line(lcoord, distance, -CONFIG['angle'], width=GRADIENT[index][1])
+        rcoord = draw_line(rcoord, distance, -CONFIG['angle'], width=GRADIENT[index][0], fill="red")
+        lcoord = draw_line(lcoord, distance, -CONFIG['angle'], width=GRADIENT[index][1], fill="red")
         center_distance += distance
         step_distance += distance
     # Right Footer Top
@@ -154,8 +154,8 @@ def draw_curves(coord):
         if step_distance > STEPS:
             step_distance = 0.0
             draw_skid(rcoord, lcoord, index, 0)
-        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0])
-        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1])
+        rcoord = draw_line(rcoord, distance, 0, width=GRADIENT[index][0], fill="blue")
+        lcoord = draw_line(lcoord, distance, 0, width=GRADIENT[index][1], fill="blue")
         center_distance += distance
         step_distance += distance
 
