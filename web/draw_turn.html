@@ -1,11 +1,22 @@
 <!DOCTYPE HTML>
-<!-- Ski Turn Curve Generator  (c)2023 Jonathan Miner -->
+<!--
+	Ski Turn Curve Generator  (c)2023 Jonathan Miner
+	https://github.com/cpn18/ski-charts
+	20230718.1.rc
+-->
 <html>
 	<head>
 	</head>
 	<body>
 		<h1>Ski Turn Curve Generator</h1>
+		<input type="checkbox" id="data" onclick="dataClick()">
+		<label for="data">Data</label>
+		<input type="checkbox" id="foot" checked onclick="footClick()">
+		<label for="foot">Foot to Foot</label>
+		<input type="checkbox" id="steer" checked onclick="steerClick()">
+		<label for="steer">Steering Angle</label><br>
 		<table><tr><td valign=top>
+		<div id="data-div" style="display:none">
 		<input type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
 		<label for="margin">Margin (px)</label><br>
 		<input type="number" id="skilength"  min="0" max="100" value="40" title="Ski Length in Pixels">
@@ -22,6 +33,8 @@
 		<label for="stance">Stance (px)</label><br>
 		<input type="number" id="pressure"  min="0" max="10" value="8" title="Maximum line width in Pixels">
 		<label for="pressure">Pressure (px)</label><br>
+		</div>
+		<div id="foot-div">
 		<table>
 			<tr>
 				<th>% of Path</th>
@@ -64,6 +77,8 @@
 				<td><input type="number" id="lp6"  min="0" max="100" value="10"></td>
 			</tr>
 		</table>
+		</div>
+		<div id="steer-div">
 		<table>
 			<tr>
 				<th>% of Path</th>
@@ -120,11 +135,45 @@
 				<td><input type="number" id="langle6" min=-180 max=180 value=-30></td>
 			</tr>
 		</table>
+		</div>
 		<button onclick="draw_turn()" id="submit">Plot Turn</button>
 		</td><td valign=top bgcolor="white">
 		<canvas id="canvas" width="400" height="800"></canvas>
 		</td></tr></table>
 		<script>
+
+function dataClick()
+{
+	var checkbox = document.getElementById('data');
+	if (checkbox.checked == true)
+	{
+		document.getElementById('data-div').style.display = 'inline';
+	} else {
+		document.getElementById('data-div').style.display = 'none';
+        }
+}
+function footClick()
+{
+	var checkbox = document.getElementById('foot');
+	if (checkbox.checked == true)
+	{
+		document.getElementById('foot-div').style.display = 'inline';
+	} else {
+		document.getElementById('foot-div').style.display = 'none';
+        }
+	draw_turn();
+}
+function steerClick()
+{
+	var checkbox = document.getElementById('steer');
+	if (checkbox.checked == true)
+	{
+		document.getElementById('steer-div').style.display = 'inline';
+	} else {
+		document.getElementById('steer-div').style.display = 'none';
+        }
+	draw_turn();
+}
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
 function draw_line(coords, length, bearing, color, width)
 {
@@ -179,8 +228,11 @@ function create_gradient(fixed_points, f0, f1)
 	return new_gradient;
 }
 
-function draw_skid(angle)
+function draw_steer(angle)
 {
+	var checkbox = document.getElementById('steer');
+	if (checkbox.checked == true)
+	{
 	if (Math.abs(right_pivot[index][1]) > 1)
 	{
 		draw_line(rcoord, right_pivot[index][0], angle+right_pivot[index][1], 'blue', 1);
@@ -190,6 +242,7 @@ function draw_skid(angle)
 	{
 		draw_line(lcoord, left_pivot[index][0], angle+left_pivot[index][1], 'blue', 1);
 		draw_line(lcoord, ski_length - left_pivot[index][0], angle+left_pivot[index][1]-180, 'blue', 1);
+	}
 	}
 }
 function draw_turn()
@@ -201,7 +254,13 @@ function draw_turn()
 	fallline = parseInt(document.getElementById('fallline').value);
 	traverse = parseInt(document.getElementById('traverse').value);
 	stance = parseInt(document.getElementById('stance').value);
-	pressure = parseInt(document.getElementById('pressure').value);
+	var checkbox = document.getElementById('foot');
+	if (checkbox.checked == true)
+	{
+		pressure = parseInt(document.getElementById('pressure').value);
+	} else {
+		pressure = 1;
+	}
 	gradient = [
 		[parseInt(document.getElementById('tp0').value), parseInt(document.getElementById('rp0').value), parseInt(document.getElementById('lp0').value)],
 		[parseInt(document.getElementById('tp1').value), parseInt(document.getElementById('rp1').value), parseInt(document.getElementById('lp1').value)],
@@ -246,6 +305,7 @@ function draw_turn()
 	center_distance = 0.0;
 	step_distance = 0.0;
 	steps = 10;
+
 	// right-apex
 	distance = 1;
 	for (i = 0; i < fallline/2; i++)
@@ -254,7 +314,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(0);
+			draw_steer(0);
 		}
 		rcoord = draw_line(rcoord, distance, 0, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, distance, 0, 'black', gradient[index][1]);
@@ -271,7 +331,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(i);
+			draw_steer(i);
 		}
 		rcoord = draw_line(rcoord, rdistance, i, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, ldistance, i, 'black', gradient[index][1]);
@@ -286,7 +346,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(angle);
+			draw_steer(angle);
 		}
 		rcoord = draw_line(rcoord, distance, angle, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, distance, angle, 'black', gradient[index][1]);
@@ -303,7 +363,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(i);
+			draw_steer(i);
 		}
 		rcoord = draw_line(rcoord, rdistance, i, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, ldistance, i, 'black', gradient[index][1]);
@@ -318,7 +378,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(0);
+			draw_steer(0);
 		}
 		rcoord = draw_line(rcoord, distance, 0, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, distance, 0, 'black', gradient[index][1]);
@@ -335,7 +395,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(-i);
+			draw_steer(-i);
 		}
 		rcoord = draw_line(rcoord, rdistance, -i, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, ldistance, -i, 'black', gradient[index][1]);
@@ -350,7 +410,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(-angle);
+			draw_steer(-angle);
 		}
 		rcoord = draw_line(rcoord, distance, -angle, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, distance, -angle, 'black', gradient[index][1]);
@@ -367,7 +427,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(-i);
+			draw_steer(-i);
 		}
 		rcoord = draw_line(rcoord, rdistance, -i, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, ldistance, -i, 'black', gradient[index][1]);
@@ -383,7 +443,7 @@ function draw_turn()
 		if (step_distance > steps)
 		{
 			step_distance = 0.0;
-			draw_skid(0);
+			draw_steer(0);
 		}
 		rcoord = draw_line(rcoord, distance, 0, 'black', gradient[index][0]);
 		lcoord = draw_line(lcoord, distance, 0, 'black', gradient[index][1]);
