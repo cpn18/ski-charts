@@ -144,6 +144,8 @@
 			<option value=2>Wedge Christie</option>
 			<option value=3>Skidded Parallel</option>
 			<option value=4>Carved Parallel</option>
+			<option value=5>Top Butter</option>
+			<option value=6>Bottom Butter</option>
 		</select>
 		<br>
 		<button onclick="draw_turn()" id="submit">Plot Turn</button>
@@ -748,6 +750,146 @@ function preset()
 		document.getElementById('langle4').value = 0;
 		document.getElementById('langle5').value = 0;
 		document.getElementById('langle6').value = 5;
+	}
+	else if (value == 5)
+	{
+		// Top Butter
+
+		// pressure
+		document.getElementById('tp0').value = 0;
+		document.getElementById('tp1').value = 20;
+		document.getElementById('tp2').value = 30;
+		document.getElementById('tp3').value = 50;
+		document.getElementById('tp4').value = 70;
+		document.getElementById('tp5').value = 80;
+		document.getElementById('tp6').value = 100;
+
+		document.getElementById('rp0').value = 85;
+		document.getElementById('rp1').value = 80;
+		document.getElementById('rp2').value = 50;
+		document.getElementById('rp3').value = 15;
+		document.getElementById('rp4').value = 20;
+		document.getElementById('rp5').value = 50;
+		document.getElementById('rp6').value = 85;
+
+		document.getElementById('lp0').value = 15;
+		document.getElementById('lp1').value = 20;
+		document.getElementById('lp2').value = 50;
+		document.getElementById('lp3').value = 85;
+		document.getElementById('lp4').value = 80;
+		document.getElementById('lp5').value = 50;
+		document.getElementById('lp6').value = 15;
+
+		// steering angle
+		document.getElementById('pp0').value = 0;
+		document.getElementById('pp1').value = 20;
+		document.getElementById('pp2').value = 30;
+		document.getElementById('pp3').value = 50;
+		document.getElementById('pp4').value = 70;
+		document.getElementById('pp5').value = 80;
+		document.getElementById('pp6').value = 100;
+
+		document.getElementById('rpivot0').value = 50;
+		document.getElementById('rpivot1').value = 50;
+		document.getElementById('rpivot2').value = 50;
+		document.getElementById('rpivot3').value = 50;
+		document.getElementById('rpivot4').value = 50;
+		document.getElementById('rpivot5').value = 50;
+		document.getElementById('rpivot6').value = 50;
+
+		document.getElementById('rangle0').value = 15;
+		document.getElementById('rangle1').value = 10;
+		document.getElementById('rangle2').value = -30;
+		document.getElementById('rangle3').value = -15;
+		document.getElementById('rangle4').value = -10;
+		document.getElementById('rangle5').value = 30;
+		document.getElementById('rangle6').value = 15;
+
+		document.getElementById('lpivot0').value = 50;
+		document.getElementById('lpivot1').value = 50;
+		document.getElementById('lpivot2').value = 50;
+		document.getElementById('lpivot3').value = 50;
+		document.getElementById('lpivot4').value = 50;
+		document.getElementById('lpivot5').value = 50;
+		document.getElementById('lpivot6').value = 50;
+
+		document.getElementById('langle0').value = 15;
+		document.getElementById('langle1').value = 10;
+		document.getElementById('langle2').value = -30;
+		document.getElementById('langle3').value = -15;
+		document.getElementById('langle4').value = -10;
+		document.getElementById('langle5').value = 30;
+		document.getElementById('langle6').value = 15;
+	}
+	else if (value == 6)
+	{
+		// Bottom Butter
+
+		// pressure
+		document.getElementById('tp0').value = 0;
+		document.getElementById('tp1').value = 20;
+		document.getElementById('tp2').value = 30;
+		document.getElementById('tp3').value = 50;
+		document.getElementById('tp4').value = 70;
+		document.getElementById('tp5').value = 80;
+		document.getElementById('tp6').value = 100;
+
+		document.getElementById('rp0').value = 85;
+		document.getElementById('rp1').value = 80;
+		document.getElementById('rp2').value = 50;
+		document.getElementById('rp3').value = 15;
+		document.getElementById('rp4').value = 20;
+		document.getElementById('rp5').value = 50;
+		document.getElementById('rp6').value = 85;
+
+		document.getElementById('lp0').value = 15;
+		document.getElementById('lp1').value = 20;
+		document.getElementById('lp2').value = 50;
+		document.getElementById('lp3').value = 85;
+		document.getElementById('lp4').value = 80;
+		document.getElementById('lp5').value = 50;
+		document.getElementById('lp6').value = 15;
+
+		// steering angle
+		document.getElementById('pp0').value = 0;
+		document.getElementById('pp1').value = 20;
+		document.getElementById('pp2').value = 30;
+		document.getElementById('pp3').value = 50;
+		document.getElementById('pp4').value = 70;
+		document.getElementById('pp5').value = 80;
+		document.getElementById('pp6').value = 100;
+
+		document.getElementById('rpivot0').value = 50;
+		document.getElementById('rpivot1').value = 50;
+		document.getElementById('rpivot2').value = 50;
+		document.getElementById('rpivot3').value = 50;
+		document.getElementById('rpivot4').value = 50;
+		document.getElementById('rpivot5').value = 50;
+		document.getElementById('rpivot6').value = 50;
+
+		document.getElementById('rangle0').value = 15;
+		document.getElementById('rangle1').value = 30;
+		document.getElementById('rangle2').value = -10;
+		document.getElementById('rangle3').value = -15;
+		document.getElementById('rangle4').value = -30;
+		document.getElementById('rangle5').value = 10;
+		document.getElementById('rangle6').value = 15;
+
+		document.getElementById('lpivot0').value = 50;
+		document.getElementById('lpivot1').value = 50;
+		document.getElementById('lpivot2').value = 50;
+		document.getElementById('lpivot3').value = 50;
+		document.getElementById('lpivot4').value = 50;
+		document.getElementById('lpivot5').value = 50;
+		document.getElementById('lpivot6').value = 50;
+
+		document.getElementById('langle0').value = 15;
+		document.getElementById('langle1').value = 30;
+		document.getElementById('langle2').value = -10;
+		document.getElementById('langle3').value = -15;
+		document.getElementById('langle4').value = -30;
+		document.getElementById('langle5').value = 10;
+		document.getElementById('langle6').value = 15;
 	}
 	draw_turn();	
 }
