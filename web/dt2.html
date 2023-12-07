@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<!--
+        Ski Turn Curve Generator  (c)2023 Jonathan Miner
+        https://github.com/cpn18/ski-charts
+        20230718.2.rc
+-->
+<html>
+        <head>
+        </head>
+	<body>
+		<canvas id="canvas" width="400" height="800"></canvas>
+	<script>
+// https://www.javascripttutorial.net/web-apis/javascript-draw-line/
+function draw_line(coords, length, bearing, color, width)
+{
+        bearing *= Math.PI / 180.0;
+        dy = length * Math.cos(bearing);
+        dx = length * Math.sin(bearing);
+        end = [coords[0] + dx, coords[1] + dy];
+        if (width > 0)
+        {
+                const canvas = document.querySelector('#canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
+                ctx.beginPath();
+                ctx.moveTo(coords[0], coords[1]);
+                ctx.lineTo(end[0], end[1]);
+                ctx.stroke();
+        }
+        return end;
+}
+
+path = [
+	// length,
+	// bearing (positive = right footer, negative = left footer),
+	[100, 0],
+	[50, 50],
+	[50, 20],
+	[50, -50],
+	[50, -20],
+	[50, -20],
+			[50, 0],
+	[50, -50],
+	[50, -50],
+	[50, 20],
+	];
+
+		position = [200, 0];
+		heading = 0;
+		for (const vector of path) {
+			length = vector[0];
+			degrees = vector[1];
+			for (i = 0; i < length; i++) {
+				heading += (degrees/length);
+				position = draw_line(position, 1, heading, 'black', 2);
+			}
+		}
+	</script>
+	</body>
+</html>
+
