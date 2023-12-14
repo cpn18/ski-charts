@@ -50,22 +50,22 @@ function draw_track(cstart, cend, length, bearing, color, width)
         }
 }
 
+var d_of_c = 90 / 6;  // Complete turn = 6 segments
+var l_of_a = 50;      // Each arc is 50 pixels
+
 path = [
 	// length,
 	// bearing (positive = right footer, negative = left footer),
 	// color
 	// right pressure
 	// left pressure
-	[100, 0, 'black', 50, 50],
-	[50, 50, 'blue', 90, 10],
-	[50, 20, 'black', 90, 10],
-	[50, -50, 'blue', 10, 90],
-	[50, -20, 'black', 10, 90],
-	[50, -20, 'blue', 10, 90],
-	[50, 0, 'black', 40, 60],
-	[50, -50, 'blue', 10, 90],
-	[50, -50, 'black', 10, 90],
-	[50, 20, 'blue', 20, 80],
+			[0,0,'black',90,10],
+			[l_of_a, d_of_c, 'blue', 50, 50],
+			[2*l_of_a-20, 2*d_of_c, 'red', 40, 60],
+			[2*l_of_a+20, -2*d_of_c, 'black', 50, 50],
+			[l_of_a, -1*d_of_c, 'blue', 10, 90],
+			[l_of_a, -1*d_of_c, 'blue', 50, 50],
+			[2*l_of_a-20, -2*d_of_c, 'red', 60, 40],
 ];
 
 		stance = 20; // fixed stance width
