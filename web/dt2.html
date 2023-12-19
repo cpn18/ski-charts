@@ -30,6 +30,19 @@ function draw_line(coords, length, bearing, color, width)
         }
         return end;
 }
+
+function draw_steer(coord, heading, angle, pivot)
+{
+        if (Math.abs(angle) > 1)
+        {
+		// front
+		front_length = ski_length*pivot/100.0;
+                draw_line(coord, front_length, heading+angle, ski_color, ski_width);
+		// back
+                draw_line(coord, ski_length-front_length, heading+angle-180, ski_color, ski_width);
+        }
+}
+
 function draw_track(cstart, cend, length, bearing, color, width)
 {
         bearing *= Math.PI / 180.0;
@@ -48,39 +61,56 @@ function draw_track(cstart, cend, length, bearing, color, width)
                 ctx.lineTo(end[0], end[1]);
                 ctx.stroke();
         }
+	return end;
 }
 
 var d_of_c = 90 / 6;  // Complete turn = 6 segments
 var l_of_a = 50;      // Each arc is 50 pixels
+var s_p = 55;         // skier's pivot point
 
 path = [
-	// length,
-	// bearing (positive = right footer, negative = left footer),
+	// length
+	// heading (positive = right footer, negative = left footer),
 	// right color
 	// left color
 	// right pressure
 	// left pressure
 	// right stance
 	// left stance
-			[0,0,'black','black',90,10,20,20],
-			[l_of_a, d_of_c,'blue','gray',90,10,20,20],
-			[2*l_of_a-20,2*d_of_c,'red','gray',40,60,20,20],
-			[2*l_of_a+20, -2*d_of_c, 'gray','green', 10, 90,20,20],
-			[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20],
-			[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20],
-			[2*l_of_a-20, -2*d_of_c, 'gray', 'red', 60, 40,20,20],
+	// right ski angle, pivot point (0-100)
+	// left ski angle, pivot point (0-100)
+	[0,0,'black','black',90,10,20,20,15,s_p,15,s_p],
+	[l_of_a, d_of_c,'blue','gray',90,10,20,20,15,s_p,15,s_p],
+	[2*l_of_a-20,2*d_of_c,'red','gray',40,60,20,20,0,s_p,0,s_p],
+	[2*l_of_a+20, -2*d_of_c, 'gray','green', 10, 90,20,20,-15,s_p,-15,s_p],
+	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
+	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
+	[2*l_of_a-20, -2*d_of_c, 'gray', 'red', 60, 40,20,20,0,s_p,0,s_p],
 ];
 
 		center_color = 'black';
-		center_width = 1; // set to 1 to draw centerline
+		center_width = 0; // set to 1 to draw centerline
 		maxwidth = 8; // maximum pressure width
 
+		ski_color = 'purple';
+		ski_length = 100; // pixels
+		ski_width = 2; // pixels
+		ski_mod = 30; // how often to draw skis
+
+		// Initial Setting
+		total_line = 0;
 		position = [200, 0];
 		heading = 0;
 		last_right_pressure = path[0][4];
 		last_left_pressure = path[0][5];
 		last_right_stance = path[0][6];
 		last_left_stance = path[0][7];
+		last_right_angle = path[0][8];
+		last_right_pivot = path[0][9];
+		last_left_angle = path[0][10];
+		last_left_pivot = path[0][11];
+
+		// Loop through the path
 		for (const vector of path) {
 			length = vector[0];
 			degrees = vector[1];
@@ -93,14 +123,25 @@ path = [
 				left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
 				heading += (degrees/length);
 				new_position = draw_line(position, 1, heading, center_color, center_width);
-				draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
-				draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
+				right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
+				left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
+
+				if (total_line % ski_mod == 0) {
+					draw_steer(right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length);
+					draw_steer(left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length);
+				}
+
 				position = new_position;
+				total_line += 1;
 			}
 			last_right_pressure = vector[4]
 			last_left_pressure = vector[5]
 			last_right_stance = vector[6]
 			last_left_stance = vector[7]
+			last_right_angle = vector[8];
+			last_right_pivot = vector[9];
+			last_left_angle = vector[10];
+			last_left_pivot = vector[11];
 		}
 	</script>
 	</body>
