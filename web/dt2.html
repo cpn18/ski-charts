@@ -56,40 +56,51 @@ var l_of_a = 50;      // Each arc is 50 pixels
 path = [
 	// length,
 	// bearing (positive = right footer, negative = left footer),
-	// color
+	// right color
+	// left color
 	// right pressure
 	// left pressure
-			[0,0,'black',90,10],
-			[l_of_a, d_of_c, 'blue', 50, 50],
-			[2*l_of_a-20, 2*d_of_c, 'red', 40, 60],
-			[2*l_of_a+20, -2*d_of_c, 'black', 50, 50],
-			[l_of_a, -1*d_of_c, 'blue', 10, 90],
-			[l_of_a, -1*d_of_c, 'blue', 50, 50],
-			[2*l_of_a-20, -2*d_of_c, 'red', 60, 40],
+	// right stance
+	// left stance
+			[0,0,'black','black',90,10,20,20],
+			[l_of_a, d_of_c,'blue','gray',90,10,20,20],
+			[2*l_of_a-20,2*d_of_c,'red','gray',40,60,20,20],
+			[2*l_of_a+20, -2*d_of_c, 'gray','green', 10, 90,20,20],
+			[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20],
+			[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20],
+			[2*l_of_a-20, -2*d_of_c, 'gray', 'red', 60, 40,20,20],
 ];
 
-		stance = 20; // fixed stance width
-		centerline = 0; // set to 1 to draw centerline
+		center_color = 'black';
+		center_width = 1; // set to 1 to draw centerline
 		maxwidth = 8; // maximum pressure width
 
 		position = [200, 0];
 		heading = 0;
-		last_right_pressure = path[0][3];
-		last_left_pressure = path[0][4];
+		last_right_pressure = path[0][4];
+		last_left_pressure = path[0][5];
+		last_right_stance = path[0][6];
+		last_left_stance = path[0][7];
 		for (const vector of path) {
 			length = vector[0];
 			degrees = vector[1];
+			right_color = vector[2];
+			left_color = vector[3];
 			for (i = 0; i < length; i++) {
-				right_pressure = last_right_pressure + i*(vector[3] - last_right_pressure)/length
-				left_pressure = last_left_pressure + i*(vector[4] - last_left_pressure)/length
+				right_pressure = last_right_pressure + i*(vector[4] - last_right_pressure)/length
+				left_pressure = last_left_pressure + i*(vector[5] - last_left_pressure)/length
+				right_stance = last_right_stance + i*(vector[6] - last_right_stance)/length
+				left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
 				heading += (degrees/length);
-				new_position = draw_line(position, 1, heading, vector[2], centerline);
-				draw_track(position, new_position, stance, heading-90, vector[2], maxwidth*right_pressure/100.0);
-				draw_track(position, new_position, stance, heading+90, vector[2], maxwidth*left_pressure/100.0);
+				new_position = draw_line(position, 1, heading, center_color, center_width);
+				draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
+				draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
 				position = new_position;
 			}
-			last_right_pressure = vector[3]
-			last_left_pressure = vector[4]
+			last_right_pressure = vector[4]
+			last_left_pressure = vector[5]
+			last_right_stance = vector[6]
+			last_left_stance = vector[7]
 		}
 	</script>
 	</body>
