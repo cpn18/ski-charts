@@ -1,15 +1,45 @@
 <!DOCTYPE HTML>
 <!--
-        Ski Turn Curve Generator  (c)2023 Jonathan Miner
+        Ski Turn Curve Generator V2  (c)2023 Jonathan Miner
         https://github.com/cpn18/ski-charts
-        20230718.2.rc
 -->
 <html>
         <head>
+		<title>Ski Turn Curve Generator V2</title>
         </head>
 	<body>
+		<input type=text id=file></input>
+		<button onclick=handle_click()>Plot</button><br>
+		<p>Enter filename and press "Plot", or reload to clear.</p>
+		<br>
 		<canvas id="canvas" width="400" height="800"></canvas>
 	<script>
+// https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
+var loadJS = function(url, implementationCode, location){
+    //url is URL of external file, implementationCode is the code
+    //to be called from the file, location is the location to 
+    //insert the <script> element
+
+    var scriptTag = document.createElement('script');
+
+    scriptTag.src = url;
+    scriptTag.onload = implementationCode;
+    scriptTag.onreadystatechange = implementationCode;
+
+    location.appendChild(scriptTag);
+
+    scriptTag.onerror = function()
+    {
+        alert("Error loading " + this.src);
+    }
+};
+
+function handle_click()
+{
+	var filename = document.getElementById('file').value;
+	loadJS(filename, plot, document.body);
+}
+
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
 function draw_line(coords, length, bearing, color, width)
 {
@@ -33,6 +63,7 @@ function draw_line(coords, length, bearing, color, width)
 
 function draw_steer(coord, heading, angle, pivot)
 {
+	// draw angle of a steered ski
         if (Math.abs(angle) > 1)
         {
 		// front
@@ -43,11 +74,12 @@ function draw_steer(coord, heading, angle, pivot)
         }
 }
 
-function draw_track(cstart, cend, length, bearing, color, width)
+function draw_track(cstart, cend, offset, bearing, color, width)
 {
+	// draw the ski track based on offset from centerline
         bearing *= Math.PI / 180.0;
-        dy = length * Math.cos(bearing);
-        dx = length * Math.sin(bearing);
+        dy = offset * Math.cos(bearing);
+        dx = offset * Math.sin(bearing);
         start = [cstart[0] + dx, cstart[1] + dy];
         end = [cend[0] + dx, cend[1] + dy];
         if (width > 0)
@@ -64,85 +96,67 @@ function draw_track(cstart, cend, length, bearing, color, width)
 	return end;
 }
 
-var d_of_c = 90 / 6;  // Complete turn = 6 segments
-var l_of_a = 50;      // Each arc is 50 pixels
-var s_p = 55;         // skier's pivot point
+function plot()
+{
+	center_color = 'black';
+	center_width = 0; // set to 1 to draw centerline
+	maxwidth = 8; // maximum pressure width
 
-path = [
-	// length
-	// heading (positive = right footer, negative = left footer),
-	// right color
-	// left color
-	// right pressure
-	// left pressure
-	// right stance
-	// left stance
-	// right ski angle, pivot point (0-100)
-	// left ski angle, pivot point (0-100)
-	[0,0,'black','black',90,10,20,20,15,s_p,15,s_p],
-	[l_of_a, d_of_c,'blue','gray',90,10,20,20,15,s_p,15,s_p],
-	[2*l_of_a-20,2*d_of_c,'red','gray',40,60,20,20,0,s_p,0,s_p],
-	[2*l_of_a+20, -2*d_of_c, 'gray','green', 10, 90,20,20,-15,s_p,-15,s_p],
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
-	[2*l_of_a-20, -2*d_of_c, 'gray', 'red', 60, 40,20,20,0,s_p,0,s_p],
-];
+	ski_color = 'purple';
+	ski_length = 100; // pixels
+	ski_width = 2; // pixels
+	ski_mod = 30; // how often to draw skis
 
-		center_color = 'black';
-		center_width = 0; // set to 1 to draw centerline
-		maxwidth = 8; // maximum pressure width
+	// Initial Setting
+	total_line = 0;
+	position = [200, 0];
+	heading = 0;
+	last_right_pressure = path[0][4];
+	last_left_pressure = path[0][5];
+	last_right_stance = path[0][6];
+	last_left_stance = path[0][7];
+	last_right_angle = path[0][8];
+	last_right_pivot = path[0][9];
+	last_left_angle = path[0][10];
+	last_left_pivot = path[0][11];
 
-		ski_color = 'purple';
-		ski_length = 100; // pixels
-		ski_width = 2; // pixels
-		ski_mod = 30; // how often to draw skis
+	// Loop through the path
+	for (const vector of path)
+	{
+		length = vector[0];
+		degrees = vector[1];
+		right_color = vector[2];
+		left_color = vector[3];
+		for (i = 0; i < length; i++)
+		{
+			right_pressure = last_right_pressure + i*(vector[4] - last_right_pressure)/length
+			left_pressure = last_left_pressure + i*(vector[5] - last_left_pressure)/length
+			right_stance = last_right_stance + i*(vector[6] - last_right_stance)/length
+			left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
+			heading += (degrees/length);
+			new_position = draw_line(position, 1, heading, center_color, center_width);
+			right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
+			left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
 
-		// Initial Setting
-		total_line = 0;
-		position = [200, 0];
-		heading = 0;
-		last_right_pressure = path[0][4];
-		last_left_pressure = path[0][5];
-		last_right_stance = path[0][6];
-		last_left_stance = path[0][7];
-		last_right_angle = path[0][8];
-		last_right_pivot = path[0][9];
-		last_left_angle = path[0][10];
-		last_left_pivot = path[0][11];
-
-		// Loop through the path
-		for (const vector of path) {
-			length = vector[0];
-			degrees = vector[1];
-			right_color = vector[2];
-			left_color = vector[3];
-			for (i = 0; i < length; i++) {
-				right_pressure = last_right_pressure + i*(vector[4] - last_right_pressure)/length
-				left_pressure = last_left_pressure + i*(vector[5] - last_left_pressure)/length
-				right_stance = last_right_stance + i*(vector[6] - last_right_stance)/length
-				left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
-				heading += (degrees/length);
-				new_position = draw_line(position, 1, heading, center_color, center_width);
-				right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
-				left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
-
-				if (total_line % ski_mod == 0) {
-					draw_steer(right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length);
-					draw_steer(left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length);
-				}
-
-				position = new_position;
-				total_line += 1;
+			if (total_line % ski_mod == 0)
+			{
+				draw_steer(right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length);
+				draw_steer(left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length);
 			}
-			last_right_pressure = vector[4]
-			last_left_pressure = vector[5]
-			last_right_stance = vector[6]
-			last_left_stance = vector[7]
-			last_right_angle = vector[8];
-			last_right_pivot = vector[9];
-			last_left_angle = vector[10];
-			last_left_pivot = vector[11];
+
+			position = new_position;
+			total_line += 1;
 		}
+		last_right_pressure = vector[4]
+		last_left_pressure = vector[5]
+		last_right_stance = vector[6]
+		last_left_stance = vector[7]
+		last_right_angle = vector[8];
+		last_right_pivot = vector[9];
+		last_left_angle = vector[10];
+		last_left_pivot = vector[11];
+	}
+}
 	</script>
 	</body>
 </html>
