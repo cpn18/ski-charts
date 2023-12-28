@@ -12,7 +12,7 @@
 		<button onclick=handle_click()>Plot</button><br>
 		<p>Enter filename and press "Plot", or reload to clear.</p>
 		<br>
-		<canvas id="canvas" width="400" height="800"></canvas>
+		<canvas id="canvas" width="800" height="1600"></canvas>
 	<script>
 // https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 var loadJS = function(url, implementationCode, location){
@@ -120,6 +120,9 @@ function plot()
 	last_left_angle = path[0][10];
 	last_left_pivot = path[0][11];
 
+	right_points = [];
+	left_points = [];
+
 	// Loop through the path
 	for (const vector of path)
 	{
@@ -138,10 +141,11 @@ function plot()
 			right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
 			left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
 
+			// save positions for later
 			if (total_line % ski_mod == 0)
 			{
-				draw_steer(right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length);
-				draw_steer(left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length);
+				right_points.push([right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length]);
+				left_points.push([left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length]);
 			}
 
 			position = new_position;
@@ -155,6 +159,13 @@ function plot()
 		last_right_pivot = vector[9];
 		last_left_angle = vector[10];
 		last_left_pivot = vector[11];
+	}
+
+	// It's later... draw the ski positions
+	for (var i=0; i < right_points.length; i++)
+	{
+		draw_steer(right_points[i][0], right_points[i][1], right_points[i][2], right_points[i][3]);
+		draw_steer(left_points[i][0], left_points[i][1], left_points[i][2], left_points[i][3]);
 	}
 }
 	</script>
