@@ -8,9 +8,14 @@
 		<title>Ski Turn Curve Generator V2</title>
         </head>
 	<body>
+		<p>Enter filename and press "Plot", or "Clear" to clear.</p>
 		<input type=text id=file></input>
-		<button onclick=handle_click()>Plot</button><br>
-		<p>Enter filename and press "Plot", or reload to clear.</p>
+		<button onclick=handle_click()>Plot</button>
+		<button onclick=handle_clear()>Clear</button>
+		<br>
+		<input type=checkbox id=centerline checked>Center-Line</input>
+		<input type=checkbox id=pressure checked>Pressure</input>
+		<input type=checkbox id=skiangle checked>Ski-Angle</input>
 		<br>
 		<canvas id="canvas" width="800" height="1600"></canvas>
 	<script>
@@ -38,6 +43,13 @@ function handle_click()
 {
 	var filename = document.getElementById('file').value;
 	loadJS(filename, plot, document.body);
+}
+
+function handle_clear()
+{
+        canvas = document.querySelector('#canvas');
+        ctx = canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
@@ -100,11 +112,20 @@ function plot()
 {
 	center_color = 'black';
 	center_width = 0; // set to 1 to draw centerline
-	maxwidth = 8; // maximum pressure width
+	if (document.getElementById('centerline').checked)
+	{
+		center_width = 1;
+	}
 
-	ski_color = 'purple';
+	maxwidth = 0; // maximum pressure width
+	if (document.getElementById('pressure').checked)
+	{
+		maxwidth = 8;
+	}
+
+	ski_color = 'purple'; // Rossi 3G
 	ski_length = 100; // pixels
-	ski_width = 2; // pixels
+	ski_width = 1; // pixels
 	ski_mod = 30; // how often to draw skis
 
 	// Initial Setting
@@ -162,10 +183,13 @@ function plot()
 	}
 
 	// It's later... draw the ski positions
-	for (var i=0; i < right_points.length; i++)
+	if (document.getElementById('skiangle').checked)
 	{
-		draw_steer(right_points[i][0], right_points[i][1], right_points[i][2], right_points[i][3]);
-		draw_steer(left_points[i][0], left_points[i][1], left_points[i][2], left_points[i][3]);
+		for (var i=0; i < right_points.length; i++)
+		{
+			draw_steer(right_points[i][0], right_points[i][1], right_points[i][2], right_points[i][3]);
+			draw_steer(left_points[i][0], left_points[i][1], left_points[i][2], left_points[i][3]);
+		}
 	}
 }
 	</script>
