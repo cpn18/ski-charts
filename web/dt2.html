@@ -13,6 +13,7 @@
 		<button onclick=handle_click()>Plot</button>
 		<button onclick=handle_clear()>Clear</button>
 		<br>
+		<input type=checkbox id=overlay>Overlay</input>
 		<input type=checkbox id=centerline checked>Center-Line</input>
 		<input type=checkbox id=pressure checked>Pressure</input>
 		<input type=checkbox id=skiangle checked>Ski-Angle</input>
@@ -41,6 +42,10 @@ var loadJS = function(url, implementationCode, location){
 
 function handle_click()
 {
+	if (! document.getElementById('overlay').checked)
+	{
+		handle_clear();
+	}
 	var filename = document.getElementById('file').value;
 	loadJS(filename, plot, document.body);
 }
@@ -131,7 +136,7 @@ function plot()
 	// Initial Setting
 	total_line = 0;
 	position = [200, 0];
-	heading = 0;
+	heading = path[0][1];
 	last_right_pressure = path[0][4];
 	last_left_pressure = path[0][5];
 	last_right_stance = path[0][6];
