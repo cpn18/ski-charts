@@ -81,7 +81,7 @@ function draw_line(coords, length, bearing, color, width)
 function draw_steer(coord, heading, angle, pivot)
 {
 	// draw angle of a steered ski
-        if (Math.abs(angle) > 1)
+        if (Math.abs(angle) >= 1)
         {
 		// front
 		front_length = ski_length*pivot/100.0;
