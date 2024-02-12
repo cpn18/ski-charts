@@ -42,6 +42,17 @@ var loadJS = function(url, implementationCode, location){
 
 function handle_click()
 {
+	// Undefine all these so that the user can override them
+	var maxwidth = undefined;
+	var initial_position = undefined;
+	var center_color = undefined;
+	var ski_color = undefined;
+	var ski_length = undefined;
+	var ski_width = undefined;
+	var ski_mod = undefined;
+
+	console.log(maxwidth);
+
 	if (! document.getElementById('overlay').checked)
 	{
 		handle_clear();
@@ -115,27 +126,46 @@ function draw_track(cstart, cend, offset, bearing, color, width)
 
 function plot()
 {
-	center_color = 'black';
-	center_width = 0; // set to 1 to draw centerline
 	if (document.getElementById('centerline').checked)
 	{
-		center_width = 1;
+        if ( typeof center_width === 'undefined' ) {
+	    var center_width = 1; // set to 1 to draw centerline
+	}
+	} else {
+		var center_width = 0;
 	}
 
-	maxwidth = 0; // maximum pressure width
 	if (document.getElementById('pressure').checked)
 	{
-		maxwidth = 8;
+        if ( typeof maxwidth === 'undefined' ) {
+	    var maxwidth = 8; // maximum pressure width
+	}
+	} else {
+		var maxwidth = 0;
 	}
 
-	ski_color = 'purple'; // Rossi 3G
-	ski_length = 100; // pixels
-	ski_width = 1; // pixels
-	ski_mod = 30; // how often to draw skis
+        if ( typeof center_color === 'undefined' ) {
+	    var center_color = 'black';
+	}
+        if ( typeof ski_color === 'undefined' ) {
+     	    var ski_color = 'purple'; // Rossi 3G
+	}
+	if ( typeof ski_length === 'undefined' ) {
+	    var ski_length = 100; // pixels
+	}
+	if ( typeof ski_width === 'undefined' ) {
+	    var ski_width = 1; // pixels
+	}
+	if ( typeof ski_mod === 'undefined' ) {
+	    var ski_mod = 30; // how often to draw skis
+	}
+	if ( typeof initial_position === 'undefined' ) {
+	    var initial_position = [200, 0];
+	}
 
 	// Initial Setting
+	position = initial_position;
 	total_line = 0;
-	position = [200, 0];
 	heading = path[0][1];
 	last_right_pressure = path[0][4];
 	last_left_pressure = path[0][5];
