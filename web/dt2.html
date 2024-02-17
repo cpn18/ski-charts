@@ -20,6 +20,13 @@
 		<br>
 		<canvas id="canvas" width="800" height="1600"></canvas>
 	<script>
+	var maxwidth = undefined;
+	var initial_position = undefined;
+	var center_color = undefined;
+	var ski_color = undefined;
+	var ski_length = undefined;
+	var ski_width = undefined;
+	var ski_mod = undefined;
 // https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 var loadJS = function(url, implementationCode, location){
     //url is URL of external file, implementationCode is the code
@@ -43,15 +50,13 @@ var loadJS = function(url, implementationCode, location){
 function handle_click()
 {
 	// Undefine all these so that the user can override them
-	var maxwidth = undefined;
-	var initial_position = undefined;
-	var center_color = undefined;
-	var ski_color = undefined;
-	var ski_length = undefined;
-	var ski_width = undefined;
-	var ski_mod = undefined;
-
-	console.log(maxwidth);
+	maxwidth = undefined;
+	initial_position = undefined;
+	center_color = undefined;
+	ski_color = undefined;
+	ski_length = undefined;
+	ski_width = undefined;
+	ski_mod = undefined;
 
 	if (! document.getElementById('overlay').checked)
 	{
@@ -129,38 +134,38 @@ function plot()
 	if (document.getElementById('centerline').checked)
 	{
         if ( typeof center_width === 'undefined' ) {
-	    var center_width = 1; // set to 1 to draw centerline
+	    center_width = 1; // set to 1 to draw centerline
 	}
 	} else {
-		var center_width = 0;
+		center_width = 0;
 	}
 
 	if (document.getElementById('pressure').checked)
 	{
         if ( typeof maxwidth === 'undefined' ) {
-	    var maxwidth = 8; // maximum pressure width
+	    maxwidth = 8; // maximum pressure width
 	}
 	} else {
-		var maxwidth = 0;
+		maxwidth = 0;
 	}
 
         if ( typeof center_color === 'undefined' ) {
-	    var center_color = 'black';
+	    center_color = 'black';
 	}
         if ( typeof ski_color === 'undefined' ) {
-     	    var ski_color = 'purple'; // Rossi 3G
+     	    ski_color = 'purple'; // Rossi 3G
 	}
 	if ( typeof ski_length === 'undefined' ) {
-	    var ski_length = 100; // pixels
+	    ski_length = 100; // pixels
 	}
 	if ( typeof ski_width === 'undefined' ) {
-	    var ski_width = 1; // pixels
+	    ski_width = 1; // pixels
 	}
 	if ( typeof ski_mod === 'undefined' ) {
-	    var ski_mod = 30; // how often to draw skis
+	    ski_mod = 30; // how often to draw skis
 	}
 	if ( typeof initial_position === 'undefined' ) {
-	    var initial_position = [200, 0];
+	    initial_position = [200, 0];
 	}
 
 	// Initial Setting
