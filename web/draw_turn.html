@@ -20,21 +20,21 @@
 		<br>
 		<table><tr><td valign=top>
 		<div id="data-div" style="display:none">
-		<input type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
+		<input onchange="draw_turn()" type="number" id="margin"  min="0" max="10" value="5" title="Page Margins in Pixels">
 		<label for="margin">Margin (px)</label><br>
-		<input type="number" id="skilength"  min="0" max="100" value="40" title="Ski Length in Pixels">
+		<input onchange="draw_turn()" type="number" id="skilength"  min="0" max="100" value="40" title="Ski Length in Pixels">
 		<label for="skilength">Ski Length (px)</label><br>
-		<input type="number" id="radius"  min="0" max="200" value="100" title="Turn Radius in Pixels">
+		<input onchange="draw_turn()" type="number" id="radius"  min="0" max="200" value="100" title="Turn Radius in Pixels">
 		<label for="radius">Radius (px)</label><br>
-		<input type="number" id="angle"  min="0" max="180" value="85" title="Degree of the Turn">
+		<input onchange="draw_turn()" type="number" id="angle"  min="0" max="180" value="85" title="Degree of the Turn">
 		<label for="angle">Angle (degrees)</label><br>
-		<input type="number" id="fallline"  min="0" max="100" value="0" title="Length of straightline down the fall-line in Pixels">
+		<input onchange="draw_turn()" type="number" id="fallline"  min="0" max="100" value="0" title="Length of straightline down the fall-line in Pixels">
 		<label for="fallline">Fallline (px)</label><br>
-		<input type="number" id="traverse"  min="0" max="100" value="10" title="Length of straighline traverse bewteen turns in Pixels">
+		<input onchange="draw_turn()" type="number" id="traverse"  min="0" max="100" value="10" title="Length of straighline traverse bewteen turns in Pixels">
 		<label for="traverse">Traverse (px)</label><br>
-		<input type="number" id="stance"  min="0" max="20" value="10" title="Stance width in Pixels">
+		<input onchange="draw_turn()" type="number" id="stance"  min="0" max="20" value="10" title="Stance width in Pixels">
 		<label for="stance">Stance (px)</label><br>
-		<input type="number" id="pressure"  min="0" max="10" value="6" title="Maximum line width in Pixels">
+		<input onchange="draw_turn()" type="number" id="pressure"  min="0" max="10" value="6" title="Maximum line width in Pixels">
 		<label for="pressure">Pressure (px)</label><br>
 		</div>
 		<div id="foot-div">
@@ -46,38 +46,38 @@
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="tp0"  min="0" max="100" value="0"></td>
-				<td><input type="number" id="rp0"  min="0" max="100" value="90"></td>
-				<td><input type="number" id="lp0"  min="0" max="100" value="10"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp0"  min="0" max="100" value="90"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp0"  min="0" max="100" value="10"></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="tp1"  min="0" max="100" value="25"></td>
-				<td><input type="number" id="rp1"  min="0" max="100" value="50"></td>
-				<td><input type="number" id="lp1"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="tp1"  min="0" max="100" value="25"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp1"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp1"  min="0" max="100" value="50"></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="tp2"  min="0" max="100" value="30"></td>
-				<td><input type="number" id="rp2"  min="0" max="100" value="50"></td>
-				<td><input type="number" id="lp2"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="tp2"  min="0" max="100" value="30"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp2"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp2"  min="0" max="100" value="50"></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="tp3"  min="0" max="100" value="50"></td>
-				<td><input type="number" id="rp3"  min="0" max="100" value="10"></td>
-				<td><input type="number" id="lp3"  min="0" max="100" value="90"></td>
+				<td><input onchange="draw_turn()" type="number" id="tp3"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp3"  min="0" max="100" value="10"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp3"  min="0" max="100" value="90"></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="tp4"  min="0" max="100" value="75"></td>
-				<td><input type="number" id="rp4"  min="0" max="100" value="50"></td>
-				<td><input type="number" id="lp4"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="tp4"  min="0" max="100" value="75"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp4"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp4"  min="0" max="100" value="50"></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="tp5"  min="0" max="100" value="80"></td>
-				<td><input type="number" id="rp5"  min="0" max="100" value="50"></td>
-				<td><input type="number" id="lp5"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="tp5"  min="0" max="100" value="80"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp5"  min="0" max="100" value="50"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp5"  min="0" max="100" value="50"></td>
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="tp6"  min="0" max="100" value="100"></td>
-				<td><input type="number" id="rp6"  min="0" max="100" value="90"></td>
-				<td><input type="number" id="lp6"  min="0" max="100" value="10"></td>
+				<td><input onchange="draw_turn()" type="number" id="rp6"  min="0" max="100" value="90"></td>
+				<td><input onchange="draw_turn()" type="number" id="lp6"  min="0" max="100" value="10"></td>
 			</tr>
 		</table>
 		</div>
@@ -90,52 +90,52 @@
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="pp0" min=0 max=100 value=0></td>
-				<td><input type="number" id="rpivot0" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle0" min=-180 max=180 value=30></td>
-				<td><input type="number" id="lpivot0" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle0" min=-180 max=180 value=-30></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot0" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle0" min=-180 max=180 value=30></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot0" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle0" min=-180 max=180 value=-30></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="pp1" min=0 max=100 value=20></td>
-				<td><input type="number" id="rpivot1" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle1" min=-180 max=180 value=0></td>
-				<td><input type="number" id="lpivot1" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle1" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="pp1" min=0 max=100 value=20></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot1" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle1" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot1" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle1" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="pp2" min=0 max=100 value=30></td>
-				<td><input type="number" id="rpivot2" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle2" min=-180 max=180 value=0></td>
-				<td><input type="number" id="lpivot2" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle2" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="pp2" min=0 max=100 value=30></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot2" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle2" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot2" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle2" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="pp3" min=0 max=100 value=50></td>
-				<td><input type="number" id="rpivot3" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle3" min=-180 max=180 value=30></td>
-				<td><input type="number" id="lpivot3" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle3" min=-180 max=180 value=-30></td>
+				<td><input onchange="draw_turn()" type="number" id="pp3" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot3" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle3" min=-180 max=180 value=30></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot3" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle3" min=-180 max=180 value=-30></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="pp4" min=0 max=100 value=70></td>
-				<td><input type="number" id="rpivot4" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle4" min=-180 max=180 value=0></td>
-				<td><input type="number" id="lpivot4" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle4" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="pp4" min=0 max=100 value=70></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot4" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle4" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot4" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle4" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
-				<td><input type="number" id="pp5" min=0 max=100 value=80></td>
-				<td><input type="number" id="rpivot5" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle5" min=-180 max=180 value=0></td>
-				<td><input type="number" id="lpivot5" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle5" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="pp5" min=0 max=100 value=80></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot5" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle5" min=-180 max=180 value=0></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot5" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle5" min=-180 max=180 value=0></td>
 			</tr>
 			<tr>
 				<td><input readonly type="number" id="pp6" min=0 max=100 value=100></td>
-				<td><input type="number" id="rpivot6" min=0 max=100 value=50></td>
-				<td><input type="number" id="rangle6" min=-180 max=180 value=30></td>
-				<td><input type="number" id="lpivot6" min=0 max=100 value=50></td>
-				<td><input type="number" id="langle6" min=-180 max=180 value=-30></td>
+				<td><input onchange="draw_turn()" type="number" id="rpivot6" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="rangle6" min=-180 max=180 value=30></td>
+				<td><input onchange="draw_turn()" type="number" id="lpivot6" min=0 max=100 value=50></td>
+				<td><input onchange="draw_turn()" type="number" id="langle6" min=-180 max=180 value=-30></td>
 			</tr>
 		</table>
 		</div>
@@ -276,6 +276,17 @@ function draw_turn()
 	} else {
 		pressure = 1;
 	}
+
+	// Make sure all the percentage points are sequential
+	field = 'tp'
+	for (var i = 1; i<=5; i++) {
+		v1 = parseInt(document.getElementById(field+i).value)
+		v2 = parseInt(document.getElementById(field+(i+1)).value)
+		if (v1 >= v2) {
+			document.getElementById(field+i).value = v2 - 1
+		}
+	}
+
 	gradient = [
 		[parseInt(document.getElementById('tp0').value), parseInt(document.getElementById('rp0').value), parseInt(document.getElementById('lp0').value)],
 		[parseInt(document.getElementById('tp1').value), parseInt(document.getElementById('rp1').value), parseInt(document.getElementById('lp1').value)],
@@ -286,6 +297,16 @@ function draw_turn()
 		[parseInt(document.getElementById('tp6').value), parseInt(document.getElementById('rp6').value), parseInt(document.getElementById('lp6').value)],
 	];
 	gradient = create_gradient(gradient, pressure/100.0, pressure/100.0);
+
+	// Make sure all the percentage points are sequential
+	field = 'pp'
+	for (var i = 1; i<=5; i++) {
+		v1 = parseInt(document.getElementById(field+i).value)
+		v2 = parseInt(document.getElementById(field+(i+1)).value)
+		if (v1 >= v2) {
+			document.getElementById(field+i).value = v2 - 1
+		}
+	}
 
 	right_pivot = [
 		[parseInt(document.getElementById('pp0').value), parseInt(document.getElementById('rpivot0').value), parseInt(document.getElementById('rangle0').value)],
