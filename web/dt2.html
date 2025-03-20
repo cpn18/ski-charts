@@ -20,14 +20,6 @@
 		<br>
 		<canvas id="canvas" width="800" height="1600"></canvas>
 	<script>
-	var maxwidth = undefined;
-	var initial_position = undefined;
-	var center_color = undefined;
-	var center_width = undefined;
-	var ski_color = undefined;
-	var ski_length = undefined;
-	var ski_width = undefined;
-	var ski_mod = undefined;
 // https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 var loadJS = function(url, implementationCode, location){
     //url is URL of external file, implementationCode is the code
@@ -50,21 +42,13 @@ var loadJS = function(url, implementationCode, location){
 
 function handle_click()
 {
-	// Undefine all these so that the user can override them
-	maxwidth = undefined;
-	initial_position = undefined;
-	center_color = undefined;
-	center_width = undefined;
-	ski_color = undefined;
-	ski_length = undefined;
-	ski_width = undefined;
-	ski_mod = undefined;
-
 	if (! document.getElementById('overlay').checked)
 	{
 		handle_clear();
 	}
 	var filename = document.getElementById('file').value;
+	
+	myTurns = null
 	loadJS(filename, plot, document.body);
 }
 
@@ -78,6 +62,7 @@ function handle_clear()
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
 function draw_line(coords, length, bearing, color, width)
 {
+	console.log(width)
         bearing *= Math.PI / 180.0;
         dy = length * Math.cos(bearing);
         dx = length * Math.sin(bearing);
@@ -106,7 +91,7 @@ function draw_steer(coord, heading, angle, pivot)
                	draw_line(coord, front_length, heading+angle, ski_color, ski_width);
 		// back
                	draw_line(coord, ski_length-front_length, heading+angle-180, ski_color, ski_width);
-        } else if (maxwidth == 0) {
+        } else if (max_width == 0) {
                	draw_line(coord, 1, heading+angle, ski_color, ski_width);
                	draw_line(coord, 1, heading+angle-180, ski_color, ski_width);
 	}
@@ -134,43 +119,25 @@ function draw_track(cstart, cend, offset, bearing, color, width)
 	return end;
 }
 
-function plot()
-{
-	if (document.getElementById('centerline').checked)
-	{
-        if ( typeof center_width === 'undefined' ) {
-	    center_width = 1; // set to 1 to draw centerline
-	}
-	} else {
+function plot() {
+	myTurns = new turnClass()
+
+	initial_position = myTurns.initial_position
+	path = myTurns.getPath()
+	max_width = myTurns.max_width
+	center_width = myTurns.center_width
+	center_color = myTurns.center_color
+	ski_color = myTurns.ski_color
+	ski_length = myTurns.ski_length
+	ski_width = myTurns.ski_width
+	ski_mod = myTurns.ski_mod
+
+	if (! document.getElementById('centerline').checked) {
 		center_width = 0;
 	}
 
-	if (document.getElementById('pressure').checked)
-	{
-        if ( typeof maxwidth === 'undefined' ) {
-	    maxwidth = 8; // maximum pressure width
-	}
-	} else {
-		maxwidth = 0;
-	}
-
-        if ( typeof center_color === 'undefined' ) {
-	    center_color = 'black';
-	}
-        if ( typeof ski_color === 'undefined' ) {
-     	    ski_color = 'purple'; // Rossi 3G
-	}
-	if ( typeof ski_length === 'undefined' ) {
-	    ski_length = 100; // pixels
-	}
-	if ( typeof ski_width === 'undefined' ) {
-	    ski_width = 1; // pixels
-	}
-	if ( typeof ski_mod === 'undefined' ) {
-	    ski_mod = 30; // how often to draw skis
-	}
-	if ( typeof initial_position === 'undefined' ) {
-	    initial_position = [200, 0];
+	if (! document.getElementById('pressure').checked) {
+		max_width = 0;
 	}
 
 	// Initial Setting
@@ -204,8 +171,8 @@ function plot()
 			left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
 			heading += (degrees/length);
 			new_position = draw_line(position, 1, heading, center_color, center_width);
-			right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, maxwidth*right_pressure/100.0);
-			left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, maxwidth*left_pressure/100.0);
+			right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, max_width*right_pressure/100.0);
+			left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, max_width*left_pressure/100.0);
 
 			// save positions for later
 			if (total_line % ski_mod == 0)
