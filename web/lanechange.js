@@ -1,71 +1,89 @@
 // This is Javascript
+turnClass = class {
+        constructor() {
+                this.max_width = 8 // Pixels
 
-var d_of_c = 120 / 6;  // Complete turn = 6 segments
-var l_of_a = 25;      // Each arc is 50 pixels
-var s_p = 55;         // skier's pivot point
+                this.center_width = 1 // Pixels
+                this.center_color = 'black'
 
-// Path is required
-path = [
-	// starting point
-	[0,0,'black','black',90,10,20,20,15,s_p,15,s_p],
-];
+                this.ski_color = 'purple' // Rossi 3G
+                this.ski_length = 100 // Pixels
+                this.ski_width = 1 // Pixels
+                this.ski_mod = 30 // Pixels, how often to draw
 
-left = [
-	// length
-	// heading (positive = right footer, negative = left footer),
-	// right color
-	// left color
-	// right pressure
-	// left pressure
-	// right stance
-	// left stance
-	// right ski pivot angle
-	// right ski pivot point (0-100)
-	// left ski pivot angle
-	// left ski pivot point (0-100)
-	
+                this.initial_position = [200, 0]
+        }
 
-	// out of the fall line
-	[l_of_a, d_of_c,'blue','gray',90,10,20,20,15,s_p,15,s_p],
-	// bottom of the turn
-	[2*l_of_a-20,2*d_of_c,'red','gray',40,60,20,20,0,s_p,0,s_p],
-	// top of the turn	
-	[2*l_of_a+20, -2*d_of_c, 'gray','green', 10, 90,20,20,-15,s_p,-15,s_p],
-	// into the fall line (specify 90/10 at the fall line)
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p]
-];
+        // Generate and return the path
+        getPath() {
 
-med_left = [
-	// out of the fall line
-	[l_of_a, d_of_c,'blue','gray',90,10,20,20,15,s_p,15,s_p],
-	// bottom of the turn
-	[10*l_of_a-20,3*d_of_c,'red','gray',40,60,20,20,0,s_p,0,s_p],
-	// top of the turn	
-	[4*l_of_a+20, -3*d_of_c, 'gray','green', 10, 90,20,20,-15,s_p,-15,s_p],
-	// into the fall line (specify 90/10 at the fall line)
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p]
-];
+		var degreeOfCurve = 120 / 6;  // Complete turn = 6 segments
+		var arcLength = 25;      // Each arc is 50 pixels
+		var skiPivot = 55;         // skier's pivot point
 
-right = [
-	// out of the fall line
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
-	// bottom of the turn
-	[2*l_of_a-20, -2*d_of_c, 'gray', 'red', 60, 40,20,20,0,s_p,0,s_p],
-	// top of the turn	
-	[2*l_of_a+20, 2*d_of_c, 'green','grey', 90, 10,20,20,15,s_p,15,s_p],
-	// into the fall line (specify 90/10 at the fall line)
-	[l_of_a, 1*d_of_c, 'blue', 'grey', 90, 10,20,20,15,s_p,15,s_p]
-];
+		// Path is required
+		var path = [
+			// length
+			// heading (positive = right footer, negative = left footer),
+			// right color
+			// left color
+			// right pressure
+			// left pressure
+			// right stance
+			// left stance
+			// right ski pivot angle
+			// right ski pivot point (0-100)
+			// left ski pivot angle
+			// left ski pivot point (0-100)
 
-med_right = [
-	// out of the fall line
-	[l_of_a, -1*d_of_c, 'gray', 'blue', 10, 90,20,20,-15,s_p,-15,s_p],
-	// bottom of the turn
-	[10*l_of_a-20, -3*d_of_c, 'gray', 'red', 60, 40,20,20,0,s_p,0,s_p],
-	// top of the turn	
-	[4*l_of_a+20, 3*d_of_c, 'green','grey', 90, 10,20,20,15,s_p,15,s_p],
-	// into the fall line (specify 90/10 at the fall line)
-	[l_of_a, 1*d_of_c, 'blue', 'grey', 90, 10,20,20,15,s_p,15,s_p]
-];
+			// starting point
+			[0,0,'black','black',90,10,20,20,15,skiPivot,15,skiPivot],
+		];
 
-path = path.concat(left).concat(right).concat(med_left).concat(right).concat(left).concat(med_right);
+		var left = [
+			// out of the fall line
+			[arcLength, degreeOfCurve,'blue','gray',90,10,20,20,15,skiPivot,15,skiPivot],
+			// bottom of the turn
+			[2*arcLength-20,2*degreeOfCurve,'red','gray',40,60,20,20,0,skiPivot,0,skiPivot],
+			// top of the turn
+			[2*arcLength+20, -2*degreeOfCurve, 'gray','green', 10, 90,20,20,-15,skiPivot,-15,skiPivot],
+			// into the fall line (specify 90/10 at the fall line)
+			[arcLength, -1*degreeOfCurve, 'gray', 'blue', 10, 90,20,20,-15,skiPivot,-15,skiPivot]
+		];
+
+		var med_left = [
+			// out of the fall line
+			[arcLength, degreeOfCurve,'blue','gray',90,10,20,20,15,skiPivot,15,skiPivot],
+			// bottom of the turn
+			[10*arcLength-20,3*degreeOfCurve,'red','gray',40,60,20,20,0,skiPivot,0,skiPivot],
+			// top of the turn
+			[4*arcLength+20, -3*degreeOfCurve, 'gray','green', 10, 90,20,20,-15,skiPivot,-15,skiPivot],
+			// into the fall line (specify 90/10 at the fall line)
+			[arcLength, -1*degreeOfCurve, 'gray', 'blue', 10, 90,20,20,-15,skiPivot,-15,skiPivot]
+		];
+
+		var right = [
+			// out of the fall line
+			[arcLength, -1*degreeOfCurve, 'gray', 'blue', 10, 90,20,20,-15,skiPivot,-15,skiPivot],
+			// bottom of the turn
+			[2*arcLength-20, -2*degreeOfCurve, 'gray', 'red', 60, 40,20,20,0,skiPivot,0,skiPivot],
+			// top of the turn
+			[2*arcLength+20, 2*degreeOfCurve, 'green','grey', 90, 10,20,20,15,skiPivot,15,skiPivot],
+			// into the fall line (specify 90/10 at the fall line)
+			[arcLength, 1*degreeOfCurve, 'blue', 'grey', 90, 10,20,20,15,skiPivot,15,skiPivot]
+		];
+
+		var med_right = [
+			// out of the fall line
+			[arcLength, -1*degreeOfCurve, 'gray', 'blue', 10, 90,20,20,-15,skiPivot,-15,skiPivot],
+			// bottom of the turn
+			[10*arcLength-20, -3*degreeOfCurve, 'gray', 'red', 60, 40,20,20,0,skiPivot,0,skiPivot],
+			// top of the turn
+			[4*arcLength+20, 3*degreeOfCurve, 'green','grey', 90, 10,20,20,15,skiPivot,15,skiPivot],
+			// into the fall line (specify 90/10 at the fall line)
+			[arcLength, 1*degreeOfCurve, 'blue', 'grey', 90, 10,20,20,15,skiPivot,15,skiPivot]
+		];
+
+		return path.concat(left).concat(right).concat(med_left).concat(right).concat(left).concat(med_right);
+	}
+}
