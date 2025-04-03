@@ -17,6 +17,7 @@
 		<input type=checkbox id=centerline checked>Center-Line</input>
 		<input type=checkbox id=pressure checked>Pressure</input>
 		<input type=checkbox id=skiangle checked>Ski-Angle</input>
+		<input type=checkbox id=hipangle checked>Hip-Angle</input>
 		<br>
 		<canvas id="canvas" width="800" height="1600"></canvas>
 	<script>
@@ -96,6 +97,13 @@ function draw_steer(coord, heading, angle, pivot)
 	}
 }
 
+function draw_hips(coord, heading, angle) {
+	if (document.getElementById('hipangle').checked) {
+		draw_line(coord, 20, heading+angle+90, 'black', 1);
+		draw_line(coord, 20, heading+angle-90, 'black', 1);
+	}
+}
+
 function draw_track(cstart, cend, offset, bearing, color, width)
 {
 	// draw the ski track based on offset from centerline
@@ -152,8 +160,15 @@ function plot() {
 	last_left_angle = path[0][10];
 	last_left_pivot = path[0][11];
 
+	if (path[0].length > 12) {
+		last_hip_angle = path[0][12]
+	} else {
+		last_hip_angle = 0
+	}
+
 	right_points = [];
 	left_points = [];
+	center_points = [];
 
 	// Loop through the path
 	for (const vector of path)
@@ -162,8 +177,14 @@ function plot() {
 		degrees = vector[1];
 		right_color = vector[2];
 		left_color = vector[3];
+		if (vector.length > 12) {
+			hip_angle = vector[12]
+		} else {
+			hip_angle = last_hip_angle
+		}
 		for (i = 0; i < length; i++)
 		{
+			this_hip_angle = last_hip_angle + i*(hip_angle - last_hip_angle)/length
 			right_pressure = last_right_pressure + i*(vector[4] - last_right_pressure)/length
 			left_pressure = last_left_pressure + i*(vector[5] - last_left_pressure)/length
 			right_stance = last_right_stance + i*(vector[6] - last_right_stance)/length
@@ -176,6 +197,7 @@ function plot() {
 			// save positions for later
 			if (total_line % ski_mod == 0)
 			{
+				center_points.push([new_position, heading, this_hip_angle])
 				right_points.push([right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length]);
 				left_points.push([left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length]);
 			}
@@ -191,6 +213,7 @@ function plot() {
 		last_right_pivot = vector[9];
 		last_left_angle = vector[10];
 		last_left_pivot = vector[11];
+		last_hip_angle = hip_angle;
 	}
 
 	// It's later... draw the ski positions
@@ -200,6 +223,7 @@ function plot() {
 		{
 			draw_steer(right_points[i][0], right_points[i][1], right_points[i][2], right_points[i][3]);
 			draw_steer(left_points[i][0], left_points[i][1], left_points[i][2], left_points[i][3]);
+			draw_hips(center_points[i][0], center_points[i][1], center_points[i][2]);
 		}
 	}
 }
