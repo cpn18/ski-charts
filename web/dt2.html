@@ -177,6 +177,15 @@ function plot() {
 		degrees = vector[1];
 		right_color = vector[2];
 		left_color = vector[3];
+		right_pressure = vector[4];
+		left_pressure = vector[5];
+		right_stance = vector[6];
+		left_stance = vector[7];
+		right_skiangle = vector[8];
+		right_pivotpoint = vector[9];
+		left_skiangle = vector[10];
+		left_pivotpoint = vector[11];
+
 		if (vector.length > 12) {
 			hip_angle = vector[12]
 		} else {
@@ -185,34 +194,34 @@ function plot() {
 		for (i = 0; i < length; i++)
 		{
 			this_hip_angle = last_hip_angle + i*(hip_angle - last_hip_angle)/length
-			right_pressure = last_right_pressure + i*(vector[4] - last_right_pressure)/length
-			left_pressure = last_left_pressure + i*(vector[5] - last_left_pressure)/length
-			right_stance = last_right_stance + i*(vector[6] - last_right_stance)/length
-			left_stance = last_left_stance + i*(vector[7] - last_left_stance)/length
+			this_right_pressure = last_right_pressure + i*(right_pressure - last_right_pressure)/length
+			this_left_pressure = last_left_pressure + i*(left_pressure - last_left_pressure)/length
+			this_right_stance = last_right_stance + i*(right_stance - last_right_stance)/length
+			this_left_stance = last_left_stance + i*(left_stance - last_left_stance)/length
 			heading += (degrees/length);
 			new_position = draw_line(position, 1, heading, center_color, center_width);
-			right_pos = draw_track(position, new_position, right_stance, heading-90, right_color, max_width*right_pressure/100.0);
-			left_pos = draw_track(position, new_position, left_stance, heading+90, left_color, max_width*left_pressure/100.0);
+			right_pos = draw_track(position, new_position, this_right_stance, heading-90, right_color, max_width*this_right_pressure/100.0);
+			left_pos = draw_track(position, new_position, this_left_stance, heading+90, left_color, max_width*this_left_pressure/100.0);
 
 			// save positions for later
 			if (total_line % ski_mod == 0)
 			{
 				center_points.push([new_position, heading, this_hip_angle])
-				right_points.push([right_pos, heading, last_right_angle+i*(vector[8]-last_right_angle)/length, last_right_pivot+i*(vector[9]-last_right_pivot)/length]);
-				left_points.push([left_pos, heading, last_left_angle+i*(vector[10]-last_left_angle)/length, last_left_pivot+i*(vector[11]-last_left_pivot)/length]);
+				right_points.push([right_pos, heading, last_right_angle+i*(right_skiangle-last_right_angle)/length, last_right_pivot+i*(right_pivotpoint-last_right_pivot)/length]);
+				left_points.push([left_pos, heading, last_left_angle+i*(left_skiangle-last_left_angle)/length, last_left_pivot+i*(left_pivotpoint-last_left_pivot)/length]);
 			}
 
 			position = new_position;
 			total_line += 1;
 		}
-		last_right_pressure = vector[4]
-		last_left_pressure = vector[5]
-		last_right_stance = vector[6]
-		last_left_stance = vector[7]
-		last_right_angle = vector[8];
-		last_right_pivot = vector[9];
-		last_left_angle = vector[10];
-		last_left_pivot = vector[11];
+		last_right_pressure = right_pressure;
+		last_left_pressure = left_pressure;
+		last_right_stance = right_stance;
+		last_left_stance = left_stance;
+		last_right_angle = right_skiangle;
+		last_right_pivot = right_pivotpoint;
+		last_left_angle = left_skiangle;
+		last_left_pivot = left_pivotpoint;
 		last_hip_angle = hip_angle;
 	}
 
