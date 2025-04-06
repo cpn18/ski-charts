@@ -105,6 +105,29 @@ function draw_track(cstart, cend, offset, bearing, color, width)
 	return end;
 }
 
+function flip(vector) {
+	return [
+		vector[0], // length
+		-vector[1], // heading
+
+		vector[3], // colors
+		vector[2],
+
+		vector[5], // pressure
+		vector[4],
+
+		vector[7], // stance
+		vector[6],
+
+		-vector[10], // pivot
+		vector[11],
+		-vector[8],
+		vector[9],
+
+		-vector[12], // hip angle
+	]
+}
+
 function plot() {
 	myTurns = new turnClass()
 
