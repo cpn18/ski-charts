@@ -128,6 +128,35 @@ function flip(vector) {
 	]
 }
 
+function scale(vector, length, arc) {
+	return [
+		vector[0] * length,
+		vector[1] * arc,
+		vector[2],
+		vector[3],
+		vector[4],
+		vector[5],
+		vector[6],
+		vector[7],
+		vector[8],
+		vector[9],
+		vector[10],
+		vector[11],
+		vector[12],
+	]
+}
+
+function get_element(array, index, value) {
+	if (array.length > index) {
+		return array[index]
+	}
+	return value
+}
+
+function gradient(start_value, end_value, percent) {
+	return start_value + percent*(end_value-start_value)
+}
+
 function plot() {
 	myTurns = new turnClass()
 
@@ -152,75 +181,97 @@ function plot() {
 	// Initial Setting
 	position = initial_position;
 	total_line = 0;
-	heading = path[0][1];
-	last_right_pressure = path[0][4];
-	last_left_pressure = path[0][5];
-	last_right_stance = path[0][6];
-	last_left_stance = path[0][7];
-	last_right_angle = path[0][8];
-	last_right_pivot = path[0][9];
-	last_left_angle = path[0][10];
-	last_left_pivot = path[0][11];
+	// How much to draw at once
+	line_length = 1;
 
-	if (path[0].length > 12) {
-		last_hip_angle = path[0][12]
-	} else {
-		last_hip_angle = 0
-	}
+	// defaults
+	heading = get_element(path[0], 1, 0)
+	last_right_color = get_element(path[0],2,'black')
+	last_left_color = get_element(path[0],3,'black')
+	last_right_pressure = get_element(path[0],4,50)
+	last_left_pressure = get_element(path[0],5,50)
+	last_right_stance = get_element(path[0],6,20)
+	last_left_stance = get_element(path[0],7,20)
+	last_right_angle = get_element(path[0],8,0)
+	last_right_pivot = get_element(path[0],9,55)
+	last_left_angle = get_element(path[0],10,0)
+	last_left_pivot = get_element(path[0],11,55)
+	last_hip_angle = get_element(path[0],12,0)
 
+	// arrays to save point data
 	right_points = [];
 	left_points = [];
 	center_points = [];
 
 	// Loop through the path
 	for (const vector of path) {
-		length = vector[0];
-		degrees = vector[1];
-		right_color = vector[2];
-		left_color = vector[3];
-		right_pressure = vector[4];
-		left_pressure = vector[5];
-		right_stance = vector[6];
-		left_stance = vector[7];
-		right_skiangle = vector[8];
-		right_pivotpoint = vector[9];
-		left_skiangle = vector[10];
-		left_pivotpoint = vector[11];
+		length = get_element(vector,0,0)
+		degrees = get_element(vector,1,0)
+		right_color = get_element(vector,2,last_right_color)
+		left_color = get_element(vector,3,last_left_color)
+		right_pressure = get_element(vector,4,last_right_pressure)
+		left_pressure = get_element(vector,5,last_left_pressure)
+		right_stance = get_element(vector,6,last_right_stance)
+		left_stance = get_element(vector,7,last_left_stance)
+		right_angle = get_element(vector,8,last_right_angle)
+		right_pivot = get_element(vector,9,last_right_pivot)
+		left_angle = get_element(vector,10,last_left_angle)
+		left_pivot = get_element(vector,11,last_left_pivot)
+		hip_angle = get_element(vector,12,last_hip_angle)
 
-		if (vector.length > 12) {
-			hip_angle = vector[12]
-		} else {
-			hip_angle = last_hip_angle
-		}
-		for (i = 0; i < length; i++) {
-			this_hip_angle = last_hip_angle + i*(hip_angle - last_hip_angle)/length
-			this_right_pressure = last_right_pressure + i*(right_pressure - last_right_pressure)/length
-			this_left_pressure = last_left_pressure + i*(left_pressure - last_left_pressure)/length
-			this_right_stance = last_right_stance + i*(right_stance - last_right_stance)/length
-			this_left_stance = last_left_stance + i*(left_stance - last_left_stance)/length
-			heading += (degrees/length);
-			new_position = draw_line(position, 1, heading, center_color, center_width);
+		for (i = 0; i < length; i += line_length) {
+			// calculate intermediate positions
+			percent = i/length
+			this_right_pressure = gradient(last_right_pressure,right_pressure,percent)
+			this_left_pressure = gradient(last_left_pressure,left_pressure,percent)
+			this_right_stance = gradient(last_right_stance,right_stance,percent)
+			this_left_stance = gradient(last_left_stance,left_stance,percent)
+
+			// calculate heading change
+			heading += line_length*(degrees/length);
+
+			// new COM
+			new_position = draw_line(position, line_length, heading, center_color, center_width);
+			// new BOS
 			right_pos = draw_track(position, new_position, this_right_stance, heading-90, right_color, max_width*this_right_pressure/100.0);
 			left_pos = draw_track(position, new_position, this_left_stance, heading+90, left_color, max_width*this_left_pressure/100.0);
 
-			// save positions for later
+			// save some positions for later
 			if (total_line % ski_mod == 0) {
-				center_points.push([new_position, heading, this_hip_angle])
-				right_points.push([right_pos, heading, last_right_angle+i*(right_skiangle-last_right_angle)/length, last_right_pivot+i*(right_pivotpoint-last_right_pivot)/length]);
-				left_points.push([left_pos, heading, last_left_angle+i*(left_skiangle-last_left_angle)/length, last_left_pivot+i*(left_pivotpoint-last_left_pivot)/length]);
+				center_points.push([
+					new_position,
+					heading,
+					gradient(last_hip_angle,hip_angle,percent)
+				]);
+				right_points.push([
+					right_pos,
+					heading,
+					gradient(last_right_angle,right_angle,percent),
+					gradient(last_right_pivot,right_pivot,percent)
+				]);
+				left_points.push([
+					left_pos,
+					heading,
+					gradient(last_left_angle,left_angle,percent),
+					gradient(last_left_pivot,left_pivot,percent)
+				]);
 			}
 
 			position = new_position;
-			total_line += 1;
+			total_line += line_length;
 		}
+
+		// Save current values
+		last_right_color = right_color;
+		last_left_color = left_color;
 		last_right_pressure = right_pressure;
 		last_left_pressure = left_pressure;
 		last_right_stance = right_stance;
 		last_left_stance = left_stance;
-		last_right_angle = right_skiangle;
-		last_right_pivot = right_pivotpoint;
-		last_left_angle = left_skiangle;
-		last_left_pivot = left_pivotpoint;
+		last_right_angle = right_angle;
+		last_right_pivot = right_pivot;
+		last_left_angle = left_angle;
+		last_left_pivot = left_pivot;
 		last_hip_angle = hip_angle;
 	}
 
