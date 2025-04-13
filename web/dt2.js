@@ -148,6 +148,9 @@ function scale(vector, length, arc) {
 
 function get_element(array, index, value) {
 	if (array.length > index) {
+		if (array[index] == undefined) {
+			return value
+		}
 		return array[index]
 	}
 	return value
