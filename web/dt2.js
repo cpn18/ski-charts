@@ -106,7 +106,7 @@ function draw_track(cstart, cend, offset, bearing, color, width)
 }
 
 function flip(vector) {
-	return [
+	output = [
 		vector[0], // length
 		-vector[1], // heading
 
@@ -124,8 +124,9 @@ function flip(vector) {
 		-vector[8],
 		vector[9],
 
-		-vector[12], // hip angle
+		-vector[12] // hip angle
 	]
+	return output
 }
 
 function scale(vector, length, arc) {
@@ -142,13 +143,23 @@ function scale(vector, length, arc) {
 		vector[9],
 		vector[10],
 		vector[11],
-		vector[12],
+		vector[12]
 	]
 }
 
 function get_element(array, index, value) {
 	if (array.length > index) {
 		if (array[index] == undefined) {
+			return value
+		}
+		return array[index]
+	}
+	return value
+}
+
+function get_number(array, index, value) {
+	if (array.length > index) {
+		if (array[index] == undefined || isNaN(array[index]) ) {
 			return value
 		}
 		return array[index]
@@ -188,18 +199,18 @@ function plot() {
 	line_length = 1;
 
 	// defaults
-	heading = get_element(path[0], 1, 0)
+	heading = get_number(path[0], 1, 0)
 	last_right_color = get_element(path[0],2,'black')
 	last_left_color = get_element(path[0],3,'black')
-	last_right_pressure = get_element(path[0],4,50)
-	last_left_pressure = get_element(path[0],5,50)
-	last_right_stance = get_element(path[0],6,20)
-	last_left_stance = get_element(path[0],7,20)
-	last_right_angle = get_element(path[0],8,0)
-	last_right_pivot = get_element(path[0],9,55)
-	last_left_angle = get_element(path[0],10,0)
-	last_left_pivot = get_element(path[0],11,55)
-	last_hip_angle = get_element(path[0],12,0)
+	last_right_pressure = get_number(path[0],4,50)
+	last_left_pressure = get_number(path[0],5,50)
+	last_right_stance = get_number(path[0],6,20)
+	last_left_stance = get_number(path[0],7,20)
+	last_right_angle = get_number(path[0],8,0)
+	last_right_pivot = get_number(path[0],9,55)
+	last_left_angle = get_number(path[0],10,0)
+	last_left_pivot = get_number(path[0],11,55)
+	last_hip_angle = get_number(path[0],12,0)
 
 	// arrays to save point data
 	right_points = [];
@@ -208,19 +219,19 @@ function plot() {
 
 	// Loop through the path
 	for (const vector of path) {
-		length = get_element(vector,0,0)
-		degrees = get_element(vector,1,0)
+		length = get_number(vector,0,0)
+		degrees = get_number(vector,1,0)
 		right_color = get_element(vector,2,last_right_color)
 		left_color = get_element(vector,3,last_left_color)
-		right_pressure = get_element(vector,4,last_right_pressure)
-		left_pressure = get_element(vector,5,last_left_pressure)
-		right_stance = get_element(vector,6,last_right_stance)
-		left_stance = get_element(vector,7,last_left_stance)
-		right_angle = get_element(vector,8,last_right_angle)
-		right_pivot = get_element(vector,9,last_right_pivot)
-		left_angle = get_element(vector,10,last_left_angle)
-		left_pivot = get_element(vector,11,last_left_pivot)
-		hip_angle = get_element(vector,12,last_hip_angle)
+		right_pressure = get_number(vector,4,last_right_pressure)
+		left_pressure = get_number(vector,5,last_left_pressure)
+		right_stance = get_number(vector,6,last_right_stance)
+		left_stance = get_number(vector,7,last_left_stance)
+		right_angle = get_number(vector,8,last_right_angle)
+		right_pivot = get_number(vector,9,last_right_pivot)
+		left_angle = get_number(vector,10,last_left_angle)
+		left_pivot = get_number(vector,11,last_left_pivot)
+		hip_angle = get_number(vector,12,last_hip_angle)
 
 		for (i = 0; i < length; i += line_length) {
 			// calculate intermediate positions
