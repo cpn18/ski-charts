@@ -10,15 +10,15 @@
 	</head>
 	<body>
 		<p>Enter filename and press "Plot", or "Clear" to clear.</p>
-		<input type=text id=file></input>
-		<button onclick=handle_click()>Plot</button>
-		<button onclick=handle_clear()>Clear</button>
+		<input onchange=replot() type=text id=file></input>
+		<button onclick=replot()>&#x1f4c8; Plot</button>
+		<button onclick=handle_clear()>&#x1f5d1;&#xfe0f; Clear</button>
 		<br>
-		<input type=checkbox id=overlay>Overlay</input>
-		<input type=checkbox id=centerline checked>Center-Line</input>
-		<input type=checkbox id=pressure checked>Pressure</input>
-		<input type=checkbox id=skiangle checked>Ski-Angle</input>
-		<input type=checkbox id=hipangle checked>Hip-Angle</input>
+		<input onchange=replot() type=checkbox id=overlay>Overlay</input>
+		<input onchange=replot() type=checkbox id=centerline checked>Center-Line</input>
+		<input onchange=replot() type=checkbox id=pressure checked>Pressure</input>
+		<input onchange=replot() type=checkbox id=skiangle checked>Ski-Angle</input>
+		<input onchange=replot() type=checkbox id=hipangle checked>Hip-Angle</input>
 		<br>
 		<canvas id="canvas" width="800" height="1600"></canvas>
 	</body>

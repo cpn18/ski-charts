@@ -1,7 +1,46 @@
 /*
- * Ski Turn Curve Generator V2  (c)2023 Jonathan Miner
+ * Ski Turn Curve Generator V2  (c)2023-2025 Jonathan Miner
  *  https://github.com/cpn18/ski-charts
  */
+
+document.addEventListener('DOMContentLoaded', function() {
+	get_ui_settings()
+
+});
+
+const valuefields = ["file"];
+const checkedfields = ["overlay", "centerline", "pressure", "skiangle", "hipangle"];
+
+function get_ui_settings() {
+	for (const field of valuefields) {
+		value = localStorage.getItem(field)
+		//console.log(field + " < " + value)
+		if (value != null && value != "") {
+			document.getElementById(field).value = value
+		}
+	}
+	for (const field of checkedfields) {
+		value = localStorage.getItem(field)
+		//console.log(field + " < " + value)
+		if (value != null && value != "") {
+			document.getElementById(field).checked = value == 'true'
+		}
+	}
+}
+
+function save_ui_settings() {
+	for (const field of valuefields) {
+		value = document.getElementById(field).value
+		//console.log(field + " > " + value)
+		localStorage.setItem(field,value)
+	}
+	for (const field of checkedfields) {
+		value = document.getElementById(field).checked
+		//console.log(field + " > " + value)
+		localStorage.setItem(field,value)
+	}
+}
+
 
 // https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 var loadJS = function(url, implementationCode, location) {
@@ -22,16 +61,21 @@ var loadJS = function(url, implementationCode, location) {
 	}
 };
 
-function handle_click()
+function replot()
 {
 	if (! document.getElementById('overlay').checked)
 	{
 		handle_clear();
 	}
+
 	var filename = document.getElementById('file').value;
 	
-	myTurns = null
-	loadJS(filename, plot, document.body);
+	if (filename == "") {
+		alert("Must specify a filename")
+	} else {
+		myTurns = null
+		loadJS(filename, plot, document.body);
+	}
 }
 
 function handle_clear()
@@ -172,10 +216,16 @@ function gradient(start_value, end_value, percent) {
 }
 
 function plot() {
+	save_ui_settings()
+
 	myTurns = new turnClass()
 
 	initial_position = myTurns.initial_position
 	path = myTurns.getPath()
+	if (path == undefined) {
+		alert("No segments defined.")
+		return
+	}
 	max_width = myTurns.max_width
 	center_width = myTurns.center_width
 	center_color = myTurns.center_color
