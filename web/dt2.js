@@ -122,10 +122,8 @@ function draw_steer(coord, heading, angle, pivot)
 }
 
 function draw_hips(coord, heading, angle) {
-	if (document.getElementById('hipangle').checked) {
-		draw_line(coord, 20, heading+angle+90, 'black', 1);
-		draw_line(coord, 20, heading+angle-90, 'black', 1);
-	}
+	draw_line(coord, 20, heading+angle+90, 'black', 1);
+	draw_line(coord, 20, heading+angle-90, 'black', 1);
 }
 
 function draw_track(cstart, cend, offset, bearing, color, width)
@@ -261,6 +259,7 @@ function plot() {
 	last_left_angle = get_number(path[0],10,0)
 	last_left_pivot = get_number(path[0],11,55)
 	last_hip_angle = get_number(path[0],12,0)
+	last_hip_offset = get_number(path[0],13,0)
 
 	// arrays to save point data
 	right_points = [];
@@ -282,6 +281,7 @@ function plot() {
 		left_angle = get_number(vector,10,last_left_angle)
 		left_pivot = get_number(vector,11,last_left_pivot)
 		hip_angle = get_number(vector,12,last_hip_angle)
+		hip_offset = get_number(vector,13,last_hip_offset)
 
 		for (i = 0; i < length; i += line_length) {
 			// calculate intermediate positions
@@ -344,7 +344,17 @@ function plot() {
 		for (var i=0; i < right_points.length; i++) {
 			draw_steer(right_points[i][0], right_points[i][1], right_points[i][2], right_points[i][3]);
 			draw_steer(left_points[i][0], left_points[i][1], left_points[i][2], left_points[i][3]);
-			draw_hips(center_points[i][0], center_points[i][1], center_points[i][2]);
+		}
+	}
+	// It's later... draw the hip position
+	if (document.getElementById('hipangle').checked) {
+		for (var i=0; i < right_points.length; i++) {
+			i1 = i + hip_offset
+			if (i1 < 0 || i1 >= right_points.length) {
+				i1 = i
+			}
+			// coordinates, heading, angle
+			draw_hips(center_points[i][0], center_points[i1][1], center_points[i1][2]);
 		}
 	}
 }
