@@ -45,7 +45,7 @@ function save_ui_settings() {
 // https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 var loadJS = function(url, implementationCode, location) {
 	//url is URL of external file, implementationCode is the code
-	//to be called from the file, location is the location to 
+	//to be called from the file, location is the location to
 	//insert the <script> element
 
 	var scriptTag = document.createElement('script');
@@ -106,6 +106,28 @@ function draw_line(coords, length, bearing, color, width)
 	return end;
 }
 
+function draw_box(base, outside, height, color)
+{
+	const width = outside[0]-base[0];
+	const canvas = document.querySelector('#canvas');
+	const ctx = canvas.getContext('2d');
+	ctx.fillStyle = color;
+	ctx.fillRect(base[0], base[1]-height-width, width, width);
+	ctx.stroke();
+}
+
+function draw_line2(from, to)
+{
+	const canvas = document.querySelector('#canvas');
+	const ctx = canvas.getContext('2d');
+	ctx.strokeStyle = 'black';
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	ctx.moveTo(from[0], from[1]);
+	ctx.lineTo(to[0], to[1]);
+	ctx.stroke();
+}
+
 function draw_steer(coord, heading, angle, pivot)
 {
 	// draw angle of a steered ski
@@ -147,6 +169,34 @@ function draw_track(cstart, cend, offset, bearing, color, width)
 	return end;
 }
 
+function draw_decoration(coords, bearing, length, data) {
+	console.log(position, bearing, length, data)
+
+	bearing *= Math.PI / 180.0;
+	dy = length * Math.cos(bearing);
+	dx = length * Math.sin(bearing);
+	base = [coords[0] + dx, coords[1] + dy];
+
+	// draw_line2(coords, base)
+
+	if (data.type == "brush") {
+		draw_line(base, data.height, 180, data.color, 2)
+		draw_line(base, data.height, 190, data.color, 2)
+		draw_line(base, data.height, 170, data.color, 2)
+	} else if (data.type == "sl") {
+		draw_line(base, data.height, 180, data.color, 2)
+	} else if (data.type == "gs") {
+		if (bearing < 0) {
+			outside = [base[0] + data.width, base[1]]
+		} else {
+			outside = [base[0] - data.width, base[1]]
+		}
+		draw_line(base, data.height, 180, data.color, 2)
+		draw_line(outside, data.height, 180, data.color, 2)
+		draw_box(base, outside, data.height, data.color)
+	}
+}
+
 function flip(vector) {
 	output = [
 		vector[0], // length
@@ -166,7 +216,10 @@ function flip(vector) {
 		-vector[8],
 		vector[9],
 
-		-vector[12] // hip angle
+		-vector[12], // hip angle
+
+		-vector[13], // decoration offset
+		vector[14]   // decoration metadata
 	]
 	return output
 }
@@ -185,7 +238,9 @@ function scale(vector, length, arc) {
 		vector[9],
 		vector[10],
 		vector[11],
-		vector[12]
+		vector[12],
+		vector[13],
+		vector[14]
 	]
 }
 
@@ -259,7 +314,8 @@ function plot() {
 	last_left_angle = get_number(path[0],10,0)
 	last_left_pivot = get_number(path[0],11,55)
 	last_hip_angle = get_number(path[0],12,0)
-	last_hip_offset = get_number(path[0],13,0)
+	last_decoration_offset = get_number(path[0],13,0)
+	last_decoration_data = get_element(path[0],14,null)
 
 	// arrays to save point data
 	right_points = [];
@@ -281,8 +337,9 @@ function plot() {
 		left_angle = get_number(vector,10,last_left_angle)
 		left_pivot = get_number(vector,11,last_left_pivot)
 		hip_angle = get_number(vector,12,last_hip_angle)
-		hip_offset = get_number(vector,13,last_hip_offset)
-
+		decoration_offset = get_number(vector,13,last_decoration_offset)
+		decoration_data = get_element(vector,14,null)
+		
 		for (i = 0; i < length; i += line_length) {
 			// calculate intermediate positions
 			percent = i/length
@@ -325,6 +382,10 @@ function plot() {
 			total_line += line_length;
 		}
 
+		if (decoration_data != null) {
+			draw_decoration(position, heading+90, decoration_offset, decoration_data)
+		}
+
 		// Save current values
 		last_right_color = right_color;
 		last_left_color = left_color;
@@ -337,6 +398,8 @@ function plot() {
 		last_left_angle = left_angle;
 		last_left_pivot = left_pivot;
 		last_hip_angle = hip_angle;
+		last_decoration_offset = decoration_offset;
+		last_decoration_data = decoration_data;
 	}
 
 	// It's later... draw the ski positions
@@ -349,12 +412,8 @@ function plot() {
 	// It's later... draw the hip position
 	if (document.getElementById('hipangle').checked) {
 		for (var i=0; i < right_points.length; i++) {
-			i1 = i + hip_offset
-			if (i1 < 0 || i1 >= right_points.length) {
-				i1 = i
-			}
 			// coordinates, heading, angle
-			draw_hips(center_points[i][0], center_points[i1][1], center_points[i1][2]);
+			draw_hips(center_points[i][0], center_points[i][1], center_points[i][2]);
 		}
 	}
 }
